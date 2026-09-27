@@ -1,6 +1,7 @@
 package com.unla.museo.repositories;
 
 import com.unla.museo.entities.UserEntity;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -13,5 +14,7 @@ public interface UserRepository{
     UserEntity save(UserEntity userEntity);
 
     Optional<UserEntity> findById(Long id);
+
+    List<UserEntity> findByRoleIdOrderByFirstNameAscLastNameAsc(String roleId);
 
 }

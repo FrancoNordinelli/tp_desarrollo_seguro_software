@@ -1,0 +1,14 @@
+package com.unla.museo.eventos.dto;
+
+import com.unla.museo.entities.UserEntity;
+
+/**
+ * Solo id y nombre y apellido: nunca email, teléfono ni password. Se usa
+ * para "curadorResponsable" y para cada entrada de "inscriptos".
+ */
+public record PersonaDTO(Long id, String nombre) {
+
+    public static PersonaDTO desde(UserEntity usuario) {
+        return new PersonaDTO(usuario.getId(), usuario.getFirstName() + " " + usuario.getLastName());
+    }
+}

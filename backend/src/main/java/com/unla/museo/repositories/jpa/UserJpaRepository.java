@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface UserJpaRepository extends JpaRepository<UserEntity,Long> {
@@ -18,6 +19,8 @@ public interface UserJpaRepository extends JpaRepository<UserEntity,Long> {
     Optional<UserEntity> findByEmail(String email);
 
     boolean existsByEmail(String email);
+
+    List<UserEntity> findByRoleIdOrderByFirstNameAscLastNameAsc(String roleId);
 
     @Transactional
     @Modifying

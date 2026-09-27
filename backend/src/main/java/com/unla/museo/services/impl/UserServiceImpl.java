@@ -3,6 +3,7 @@ package com.unla.museo.services.impl;
 
 import com.unla.museo.constants.Roles;
 import com.unla.museo.dto.request.UserCreateRequest;
+import com.unla.museo.dto.to.PersonaTO;
 import com.unla.museo.dto.to.UserTO;
 import com.unla.museo.entities.RoleEntity;
 import com.unla.museo.entities.UserEntity;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Qualifier("UserServiceImpl")
@@ -65,6 +67,13 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UserNotFoundException(ErrorMessage.User.NOT_FOUND));
         return userMapper.toResponse(user);
+    }
+
+    @Override
+    public List<PersonaTO> getCuradores() {
+        return userRepository.findByRoleIdOrderByFirstNameAscLastNameAsc(Roles.CURADOR).stream()
+                .map(usuario -> new PersonaTO(usuario.getId(), usuario.getFirstName() + " " + usuario.getLastName()))
+                .toList();
     }
 
 }

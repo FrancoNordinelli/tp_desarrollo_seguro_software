@@ -4,9 +4,8 @@ Este es el contrato contra el que está hecho el frontend. Las rutas son las
 de la sección 5 de `PLAN.md`; este documento agrega el formato exacto de cada
 JSON, que el plan no fijaba.
 
-**Estado:** el frontend ya consume estas rutas. En el backend hoy solo
-existen `GET /api/eventos` (sin filtros y con otro formato) y
-`POST /api/eventos` (sin control de rol). Todo lo demás está pendiente.
+**Estado:** implementado en el backend (módulo `com.unla.museo.eventos`) y
+consumido por el frontend.
 
 Si el backend necesita cambiar algo de acá, avisar antes: cambia también el
 frontend.
@@ -50,8 +49,9 @@ guiadas") lo pone el frontend, y el Excel usa el mismo nombre para la hoja.
 - `inscripto`: si el usuario del token está anotado. Lo calcula el backend
   con el `sub` del token; el frontend nunca manda su propio id.
 - `inscriptos`: es la `lista_de_inscriptos` que pide la consigna. Va
-  **solo en el detalle**; en el listado se omite y alcanza con
-  `cantidadInscriptos`.
+  **solo en el detalle** y **solo si quien pregunta es CURADOR o
+  ADMINISTRADOR**; para el resto, y en el listado, el campo se omite y
+  alcanza con `cantidadInscriptos`.
 - `nombre` es nombre y apellido. No exponer email, teléfono ni hash.
 
 ## Endpoints de eventos
@@ -62,7 +62,7 @@ guiadas") lo pone el frontend, y el Excel usa el mismo nombre para la hoja.
 | `GET /api/eventos/{id}` | cualquiera logueado | 200 evento con `inscriptos`; 404 |
 | `POST /api/eventos` | CURADOR, ADMINISTRADOR | 201 evento creado; 400; 403 |
 | `PUT /api/eventos/{id}` | CURADOR, ADMINISTRADOR | 200 evento; 400; 403; 404; 409 si el cupo queda por debajo de los inscriptos |
-| `DELETE /api/eventos/{id}` | CURADOR, ADMINISTRADOR | 204; 403; 404 (ver nota) |
+| `DELETE /api/eventos/{id}` | CURADOR, ADMINISTRADOR | 204 (borra también sus inscripciones); 403; 404 |
 | `POST /api/eventos/{id}/inscripcion` | cualquiera logueado | 201; 404; 409 sin cupo, ya inscripto o evento ya comenzado |
 | `DELETE /api/eventos/{id}/inscripcion` | cualquiera logueado | 204 (también si no estaba inscripto); 404 |
 | `GET /api/usuarios/curadores` | cualquiera logueado | 200 `[ { "id": 2, "nombre": "Juan Perez" } ]` |
@@ -70,11 +70,6 @@ guiadas") lo pone el frontend, y el Excel usa el mismo nombre para la hoja.
 `GET /api/usuarios/curadores` **no está en el PLAN**: hace falta para el
 filtro "curador a cargo" y para elegir el curador al crear un evento. Sin
 esto, el formulario tendría que pedir un id a mano.
-
-**Borrar un evento con inscriptos:** `PLAN.md` dice 409 y `PLAN-2.0.md`
-dice borrar las inscripciones en cascada. El frontend pide confirmación y
-funciona con las dos: si recibe 409 muestra "no se puede borrar un evento
-con inscriptos". Hay que decidir una.
 
 ### Filtros del listado
 

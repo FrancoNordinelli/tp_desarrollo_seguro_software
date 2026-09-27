@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -33,14 +34,16 @@ class SeguridadYErroresIntegrationTest {
 
     private static final String CONTRASENIA = "Aa@12345678";
     // Protegida con @PreAuthorize("hasAnyRole('CURADOR','ADMINISTRADOR')").
-    private static final String RUTA_DE_CURADOR = "/api/eventos/exportar";
+    // El id no necesita existir: alcanza con que el rol se rechace antes de
+    // llegar al servicio.
+    private static final String RUTA_DE_CURADOR = "/api/eventos/999999999";
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     void sinTokenDevuelve401ConCuerpoJson() throws Exception {
-        mockMvc.perform(get(RUTA_DE_CURADOR))
+        mockMvc.perform(delete(RUTA_DE_CURADOR))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.codigo").value(401))
@@ -51,7 +54,7 @@ class SeguridadYErroresIntegrationTest {
     void visitanteEnRutaDeCuradorDevuelve403NoQuinientos() throws Exception {
         String token = login("visitante@test.com");
 
-        mockMvc.perform(get(RUTA_DE_CURADOR).header("Authorization", "Bearer " + token))
+        mockMvc.perform(delete(RUTA_DE_CURADOR).header("Authorization", "Bearer " + token))
                 .andExpect(status().isForbidden())
                 .andExpect(jsonPath("$.codigo").value(403));
     }
@@ -70,8 +73,8 @@ class SeguridadYErroresIntegrationTest {
         String tokenVisitante = login("visitante@test.com");
         String tokenAdmin = login("admin@test.com");
 
-        MvcResult sinToken = mockMvc.perform(get(RUTA_DE_CURADOR)).andReturn();
-        MvcResult sinPermiso = mockMvc.perform(get(RUTA_DE_CURADOR)
+        MvcResult sinToken = mockMvc.perform(delete(RUTA_DE_CURADOR)).andReturn();
+        MvcResult sinPermiso = mockMvc.perform(delete(RUTA_DE_CURADOR)
                         .header("Authorization", "Bearer " + tokenVisitante))
                 .andReturn();
         MvcResult rutaInexistente = mockMvc.perform(get("/api/esto-no-existe")

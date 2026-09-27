@@ -9,4 +9,9 @@ public interface LinksApi {
         final String ME = API_AUTH + "/me";
 	}
 
+    final String API_USUARIOS = "/api/usuarios";
+    static interface UsuarioEndpoints {
+        final String CURADORES = API_USUARIOS + "/curadores";
+    }
+
 }

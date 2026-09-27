@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Qualifier("UserSQLRepositoryImpl")
@@ -36,6 +37,11 @@ public class UserSQLRepositoryImpl implements UserRepository {
     @Override
     public Optional<UserEntity> findById(Long id) {
         return this.userJpaRepository.findById(id);
+    }
+
+    @Override
+    public List<UserEntity> findByRoleIdOrderByFirstNameAscLastNameAsc(String roleId) {
+        return this.userJpaRepository.findByRoleIdOrderByFirstNameAscLastNameAsc(roleId);
     }
 
 

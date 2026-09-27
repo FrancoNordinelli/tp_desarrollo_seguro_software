@@ -11,6 +11,7 @@ import org.springframework.core.annotation.Order;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -119,7 +120,7 @@ public class EventosDataInitializer {
                 evento.setTitulo(dato.titulo());
                 evento.setDescripcion(dato.descripcion());
                 evento.setTipo(dato.tipo());
-                evento.setFechaHora(ahora.plusDays(dato.offsetDias()).withMinute(0).withSecond(0).withNano(0));
+                evento.setFechaHora(ahora.toLocalDate().plusDays(dato.offsetDias()).atTime(horaDelEvento(dato.tipo())));
                 evento.setDuracionMinutos(dato.duracionMinutos());
                 evento.setCupoMaximo(dato.cupoMaximo());
                 evento.setCurador(dato.primerCurador() ? curadorUno : curadorDos);
@@ -134,6 +135,16 @@ public class EventosDataInitializer {
                     inscribir(inscripcionRepository, evento, admin, ahora);
                 }
             }
+        };
+    }
+
+    // Horario fijo por tipo: si se tomara la hora del momento de la carga, una
+    // base creada de madrugada tendría eventos a la 1 de la mañana.
+    private static LocalTime horaDelEvento(TipoEvento tipo) {
+        return switch (tipo) {
+            case VISITA_GUIADA -> LocalTime.of(11, 0);
+            case TALLER -> LocalTime.of(16, 0);
+            case CHARLA -> LocalTime.of(18, 30);
         };
     }
 

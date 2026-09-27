@@ -95,6 +95,18 @@ class SeguridadYErroresIntegrationTest {
     }
 
     @Test
+    void visitanteConDatosInvalidosRecibe403AntesQue400() throws Exception {
+        String token = login("visitante@test.com");
+
+        mockMvc.perform(post("/api/eventos").header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON).content("{}"))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/reportes/asistencia/excel?tipo=INEXISTENTE")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void rutaInexistenteDevuelve404() throws Exception {
         String token = login("admin@test.com");
 

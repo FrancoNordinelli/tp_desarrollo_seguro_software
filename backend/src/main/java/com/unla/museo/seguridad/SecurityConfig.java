@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -69,6 +70,14 @@ public class SecurityConfig {
                                 LinksApi.AuthEndpoints.LOGIN + "/",
                                 LinksApi.AuthEndpoints.REGISTER + "/"
                         ).permitAll()
+                        // Rutas de gestión: el rol se verifica acá, antes de leer el cuerpo o
+                        // los parámetros. Si solo actuara @PreAuthorize (que se evalúa después
+                        // de la validación), un visitante con datos inválidos recibiría 400 en
+                        // lugar de 403. @PreAuthorize queda como segunda barrera.
+                        .requestMatchers(HttpMethod.POST, "/api/eventos").hasAnyRole(Roles.CURADOR, Roles.ADMIN)
+                        .requestMatchers(HttpMethod.PUT, "/api/eventos/*").hasAnyRole(Roles.CURADOR, Roles.ADMIN)
+                        .requestMatchers(HttpMethod.DELETE, "/api/eventos/*").hasAnyRole(Roles.CURADOR, Roles.ADMIN)
+                        .requestMatchers("/api/reportes/**").hasAnyRole(Roles.CURADOR, Roles.ADMIN)
                         // Todas las otras rutas requieren autenticación
                         .anyRequest().authenticated()
                 )
@@ -122,4 +131,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-}
+}

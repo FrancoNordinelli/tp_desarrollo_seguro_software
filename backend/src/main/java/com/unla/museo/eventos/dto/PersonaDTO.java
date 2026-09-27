@@ -1,6 +1,6 @@
 package com.unla.museo.eventos.dto;
 
-import com.unla.museo.entities.UserEntity;
+import com.unla.museo.seguridad.UserEntity;
 
 /**
  * Solo id y nombre y apellido: nunca email, teléfono ni password. Se usa

@@ -5,6 +5,7 @@ import com.unla.museo.eventos.dto.EventoRequest;
 import com.unla.museo.eventos.dto.PaginaEventosDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/api/eventos")
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Eventos", description = "Alta, edición, baja, listado e inscripciones a eventos")
 public class EventoController {
 
     private final EventoService eventoService;

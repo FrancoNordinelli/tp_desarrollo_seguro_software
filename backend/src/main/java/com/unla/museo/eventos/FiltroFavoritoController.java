@@ -4,6 +4,7 @@ import com.unla.museo.eventos.dto.FiltroFavoritoDTO;
 import com.unla.museo.eventos.dto.FiltroFavoritoRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/filtros-favoritos")
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Filtros favoritos", description = "Filtros de eventos guardados por cada usuario")
 public class FiltroFavoritoController {
 
     private final FiltroFavoritoService filtroFavoritoService;

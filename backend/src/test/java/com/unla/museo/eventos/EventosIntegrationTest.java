@@ -1,8 +1,8 @@
 package com.unla.museo.eventos;
 
 import com.jayway.jsonpath.JsonPath;
-import com.unla.museo.entities.UserEntity;
-import com.unla.museo.repositories.UserRepository;
+import com.unla.museo.seguridad.UserEntity;
+import com.unla.museo.seguridad.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -1,11 +1,11 @@
 package com.unla.museo.eventos;
 
 import com.unla.museo.comun.errores.RecursoInexistenteException;
-import com.unla.museo.entities.UserEntity;
+import com.unla.museo.seguridad.UserEntity;
 import com.unla.museo.eventos.dto.FiltroFavoritoDTO;
 import com.unla.museo.eventos.dto.FiltroFavoritoRequest;
 import com.unla.museo.eventos.dto.FiltrosDTO;
-import com.unla.museo.services.UsuarioActualService;
+import com.unla.museo.seguridad.UsuarioActualService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

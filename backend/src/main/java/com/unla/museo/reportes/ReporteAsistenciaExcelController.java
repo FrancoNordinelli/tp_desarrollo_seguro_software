@@ -6,6 +6,7 @@ import com.unla.museo.eventos.TipoEvento;
 import com.unla.museo.eventos.dto.FilaReporteEventoDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/reportes")
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Reportes", description = "Reportes de asistencia a eventos")
 public class ReporteAsistenciaExcelController {
 
     private static final MediaType XLSX = MediaType.parseMediaType(

@@ -1,0 +1,45 @@
+package com.unla.museo.seguridad;
+
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@Qualifier("UserSQLRepositoryImpl")
+@Repository
+@AllArgsConstructor
+public class UserSQLRepositoryImpl implements UserRepository {
+    private final UserJpaRepository userJpaRepository;
+
+    @Override
+    public Optional<UserEntity> findByEmail(String email) {
+        return userJpaRepository.findByEmail(email);
+    }
+    @Override
+    public boolean existsByEmail(String email) {
+        return userJpaRepository.existsByEmail(email);
+    }
+
+    @Override
+    public UserEntity save(UserEntity userEntity) {
+        return userJpaRepository.save(userEntity);
+    }
+
+
+    @Override
+    public Optional<UserEntity> findById(Long id) {
+        return this.userJpaRepository.findById(id);
+    }
+
+    @Override
+    public List<UserEntity> findByRoleIdOrderByFirstNameAscLastNameAsc(String roleId) {
+        return this.userJpaRepository.findByRoleIdOrderByFirstNameAscLastNameAsc(roleId);
+    }
+
+
+}

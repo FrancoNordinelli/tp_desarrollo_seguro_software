@@ -1,13 +1,13 @@
 package com.unla.museo.reportes;
 
 import com.jayway.jsonpath.JsonPath;
-import com.unla.museo.entities.UserEntity;
+import com.unla.museo.seguridad.UserEntity;
 import com.unla.museo.eventos.Evento;
 import com.unla.museo.eventos.EventoRepository;
 import com.unla.museo.eventos.Inscripcion;
 import com.unla.museo.eventos.InscripcionRepository;
 import com.unla.museo.eventos.TipoEvento;
-import com.unla.museo.repositories.UserRepository;
+import com.unla.museo.seguridad.UserRepository;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;

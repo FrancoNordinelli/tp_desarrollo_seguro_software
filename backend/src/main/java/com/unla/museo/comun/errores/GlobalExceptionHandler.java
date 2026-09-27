@@ -1,9 +1,9 @@
 package com.unla.museo.comun.errores;
 
-import com.unla.museo.exception.ErrorMessage;
-import com.unla.museo.exception.ResourceNotFoundException;
-import com.unla.museo.exception.UserAlreadyExistsException;
-import com.unla.museo.exception.UserNotFoundException;
+import com.unla.museo.seguridad.ErrorMessage;
+import com.unla.museo.seguridad.ResourceNotFoundException;
+import com.unla.museo.seguridad.UserAlreadyExistsException;
+import com.unla.museo.seguridad.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;

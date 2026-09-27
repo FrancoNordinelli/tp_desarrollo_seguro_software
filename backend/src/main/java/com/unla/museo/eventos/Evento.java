@@ -1,6 +1,6 @@
 package com.unla.museo.eventos;
 
-import com.unla.museo.entities.UserEntity;
+import com.unla.museo.seguridad.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package com.unla.museo.catalogo;
 
-import com.unla.museo.entities.UserEntity;
+import com.unla.museo.seguridad.UserEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

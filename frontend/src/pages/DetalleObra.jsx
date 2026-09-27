@@ -9,11 +9,7 @@ function DetalleObra() {
   const { loading, error, data } = useQuery(
     OBRA_DETALLE_QUERY,
     {
-      variables: {
-        filtro: null,
-        pagina: 0,
-        tamanio: 100
-      }
+      variables: { id }
     }
   )
 
@@ -29,9 +25,7 @@ function DetalleObra() {
     )
   }
 
-  const obra = data?.obras?.find(
-    (obraActual) => String(obraActual.id) === String(id)
-  )
+  const obra = data?.obra
 
   if (!obra) {
     return (

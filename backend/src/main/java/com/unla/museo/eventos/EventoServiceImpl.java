@@ -6,6 +6,7 @@ import com.unla.museo.comun.errores.SolicitudInvalidaException;
 import com.unla.museo.entities.UserEntity;
 import com.unla.museo.eventos.dto.EventoDTO;
 import com.unla.museo.eventos.dto.EventoRequest;
+import com.unla.museo.eventos.dto.FilaReporteEventoDTO;
 import com.unla.museo.eventos.dto.PaginaEventosDTO;
 import com.unla.museo.eventos.dto.PersonaDTO;
 import com.unla.museo.services.UsuarioActualService;
@@ -91,6 +92,29 @@ public class EventoServiceImpl implements EventoService {
                 .toList();
 
         return new PaginaEventosDTO(items, paginaEfectiva, tamanioEfectivo, paginaDeEventos.getTotalElements());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<FilaReporteEventoDTO> obtenerFilasParaReporte(LocalDate desde, LocalDate hasta, TipoEvento tipo,
+                                                               EstadoEvento estado) {
+        if (desde != null && hasta != null && desde.isAfter(hasta)) {
+            throw new SolicitudInvalidaException("La fecha 'desde' no puede ser posterior a 'hasta'");
+        }
+        EstadoEvento estadoEfectivo = estado != null ? estado : EstadoEvento.TODOS;
+        LocalDateTime desdeDateTime = desde != null ? desde.atStartOfDay() : null;
+        LocalDateTime hastaExclusivo = hasta != null ? hasta.plusDays(1).atStartOfDay() : null;
+        LocalDateTime ahora = LocalDateTime.now(clock);
+        boolean filtrarPasados = estadoEfectivo == EstadoEvento.PASADOS;
+        boolean filtrarFuturos = estadoEfectivo == EstadoEvento.FUTUROS;
+
+        return eventoRepository.buscarParaReporte(desdeDateTime, hastaExclusivo, tipo, filtrarPasados, filtrarFuturos, ahora)
+                .stream()
+                .map(fila -> new FilaReporteEventoDTO(
+                        fila.getId(), fila.getTitulo(), fila.getTipo(), fila.getFechaHora(),
+                        new PersonaDTO(fila.getCuradorId(), fila.getCuradorNombre() + " " + fila.getCuradorApellido()),
+                        fila.getCupoMaximo(), fila.getCantidadInscriptos()))
+                .toList();
     }
 
     @Override

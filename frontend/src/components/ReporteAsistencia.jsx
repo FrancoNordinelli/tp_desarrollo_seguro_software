@@ -5,10 +5,9 @@ import { pedir, mensajeDeError } from '../api/cliente'
 import { TIPOS_EVENTO, etiquetaTipo } from '../tiposEvento'
 import { formatearFechaHora, formatearMes } from '../fechas'
 
-// El contrato (docs/contrato-api-eventos.md) propone mover esta ruta a
-// /api/reportes/asistencia/excel cuando el backend pase la exportación al
-// módulo de reportes en vez del módulo de eventos.
-const RUTA_EXPORTAR_EXCEL = '/api/eventos/exportar'
+// Misma consulta que arma el reporte de arriba (EventoService.obtenerFilasParaReporte
+// en el backend), pero devuelta como .xlsx en vez de JSON.
+const RUTA_EXPORTAR_EXCEL = '/api/reportes/asistencia/excel'
 
 function ReporteAsistencia() {
   const [filtros, setFiltros] = useState({

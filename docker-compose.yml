@@ -1,0 +1,27 @@
+# Base de datos para desarrollo y para la demo.
+#   docker compose up -d      levanta MariaDB en el puerto 3306
+#   docker compose down       la apaga (los datos quedan en el volumen)
+#   docker compose down -v    la apaga y borra los datos
+# Usuario, clave y base coinciden con los valores por defecto de
+# backend/src/main/resources/application.properties.
+services:
+  mariadb:
+    image: mariadb:11.4
+    container_name: museo-mariadb
+    environment:
+      MARIADB_DATABASE: museodb
+      MARIADB_USER: museo
+      MARIADB_PASSWORD: museo
+      MARIADB_ROOT_PASSWORD: museo-root
+    ports:
+      - "${DB_PUERTO:-3306}:3306"
+    volumes:
+      - museo-datos:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  museo-datos:

@@ -36,6 +36,12 @@ Hace falta **Docker Desktop**, **JDK 21 o superior** y **Node 20.19+ o 22.12+**.
    GRANT ALL PRIVILEGES ON museodb.* TO 'museo'@'localhost';
    ```
 
+   **Si ya tenías una base de una versión anterior** del proyecto, borrala y
+   creala de nuevo: el modelo de eventos cambió y Hibernate no convierte la
+   tabla vieja. Con Docker: `docker compose down -v` y `docker compose up -d`.
+   Sin Docker: `DROP DATABASE museodb;` y volver a correr el `CREATE DATABASE`
+   de arriba (se pierden solo datos de prueba).
+
 2. Backend, en otra terminal:
 
    ```bash

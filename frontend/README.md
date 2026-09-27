@@ -56,13 +56,10 @@ rol no puede usar y, si el token vence, vuelve al login.
 
 ## Qué está probado y contra qué
 
-- **Login, registro, sesión vencida, catálogo, reporte y Excel:** probados
-  en el navegador contra el backend real.
-- **Eventos y filtros favoritos:** el backend todavía no implementa esas
-  rutas. Están construidos contra el contrato de
-  [`docs/contrato-api-eventos.md`](../docs/contrato-api-eventos.md) y se
-  probaron **solo contra un servidor falso** que implementa ese contrato.
-  Mientras el backend no las tenga, la pantalla muestra "El servidor
-  todavía no implementa...". Cuando el backend esté, hay que volver a
-  probarlos.
-- No hay tests automatizados del frontend.
+Todas las pantallas se probaron en el navegador contra el backend real con
+MariaDB, con los tres roles: login, registro, sesión vencida, catálogo y
+ficha de obra, agenda de eventos, inscripción y cancelación, alta y edición
+de eventos, filtros favoritos, reporte y descarga del Excel.
+
+No hay tests automatizados del frontend; los del backend están en
+`backend/src/test`.

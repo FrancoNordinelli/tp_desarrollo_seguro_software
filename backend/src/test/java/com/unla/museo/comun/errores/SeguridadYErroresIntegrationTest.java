@@ -1,8 +1,11 @@
 package com.unla.museo.comun.errores;
 
 import com.jayway.jsonpath.JsonPath;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
@@ -10,6 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -41,6 +46,9 @@ class SeguridadYErroresIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Value("${jwt.secret}")
+    private String secreto;
+
     @Test
     void sinTokenDevuelve401ConCuerpoJson() throws Exception {
         mockMvc.perform(delete(RUTA_DE_CURADOR))
@@ -48,6 +56,33 @@ class SeguridadYErroresIntegrationTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.codigo").value(401))
                 .andExpect(jsonPath("$.mensaje").exists());
+    }
+
+    @Test
+    void tokenAlteradoDevuelve401() throws Exception {
+        String token = login("admin@test.com");
+        // Cambiar el último carácter invalida la firma sin tocar el contenido.
+        String alterado = token.substring(0, token.length() - 1) + (token.endsWith("A") ? "B" : "A");
+
+        mockMvc.perform(get("/api/auth/me").header("Authorization", "Bearer " + alterado))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.codigo").value(401));
+    }
+
+    @Test
+    void tokenVencidoDevuelve401() throws Exception {
+        // Firmado con la clave real y con sub y role válidos: solo falla el vencimiento.
+        String vencido = Jwts.builder()
+                .subject("admin@test.com")
+                .claim("role", "ADMINISTRADOR")
+                .issuedAt(new Date(System.currentTimeMillis() - 7_200_000))
+                .expiration(new Date(System.currentTimeMillis() - 3_600_000))
+                .signWith(Keys.hmacShaKeyFor(secreto.getBytes(StandardCharsets.UTF_8)))
+                .compact();
+
+        mockMvc.perform(get("/api/auth/me").header("Authorization", "Bearer " + vencido))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.codigo").value(401));
     }
 
     @Test

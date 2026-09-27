@@ -42,7 +42,7 @@ public class AuthController {
     @PostMapping(value = LinksApi.AuthEndpoints.REGISTER, produces = { "application/json" })
     public ResponseEntity<String> register(@Valid @RequestBody UserCreateRequest request) {
         userService.create(request);
-        return ResponseEntity.status(HttpStatus.OK).body("Usuario creado correctamente");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado correctamente");
     }
 
 

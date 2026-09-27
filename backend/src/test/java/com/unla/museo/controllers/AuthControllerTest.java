@@ -68,7 +68,7 @@ class AuthControllerTest {
 
         var response = controller.register(request);
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals("Usuario creado correctamente", response.getBody());
         verify(userService).create(request);
     }

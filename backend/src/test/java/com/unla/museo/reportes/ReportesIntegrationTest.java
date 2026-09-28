@@ -104,7 +104,7 @@ class ReportesIntegrationTest {
     private void inscribir(EventoEntity eventoEntity, int cantidad) {
         for (int i = 0; i < cantidad; i++) {
             InscripcionEntity inscripcionEntity = new InscripcionEntity();
-            inscripcionEntity.setEventoEntity(eventoEntity);
+            inscripcionEntity.setEvento(eventoEntity);
             inscripcionEntity.setUsuario(usuario(VISITANTES_DE_EJEMPLO.get(i)));
             inscripcionEntity.setFechaInscripcion(LocalDateTime.now(clock));
             inscripcionRepository.save(inscripcionEntity);

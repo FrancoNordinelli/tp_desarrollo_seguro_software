@@ -92,7 +92,7 @@ class EventosIntegrationTest {
 
     private void inscribirDirecto(EventoEntity eventoEntity, UsuarioEntity usuario) {
         InscripcionEntity inscripcionEntity = new InscripcionEntity();
-        inscripcionEntity.setEventoEntity(eventoEntity);
+        inscripcionEntity.setEvento(eventoEntity);
         inscripcionEntity.setUsuario(usuario);
         inscripcionEntity.setFechaInscripcion(LocalDateTime.now(clock));
         inscripcionRepository.save(inscripcionEntity);

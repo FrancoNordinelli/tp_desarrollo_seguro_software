@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "EVENTO", indexes = {
+@Table(name = "EVENTOS", indexes = {
         @Index(name = "idx_evento_fecha_hora", columnList = "FECHA_HORA"),
         @Index(name = "idx_evento_curador_id", columnList = "CURADOR_ID")
 })

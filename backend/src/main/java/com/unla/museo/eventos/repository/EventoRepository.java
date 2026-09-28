@@ -57,8 +57,8 @@ public interface EventoRepository extends JpaRepository<EventoEntity, Long> {
     // esta misma lista para que nunca den números distintos.
     @Query("""
             select e.id as id, e.titulo as titulo, e.tipo as tipo, e.fechaHora as fechaHora,
-                   e.curador.id as curadorId, e.curador.firstName as curadorNombre,
-                   e.curador.lastName as curadorApellido, e.cupoMaximo as cupoMaximo,
+                   e.curador.id as curadorId, e.curador.nombre as curadorNombre,
+                   e.curador.apellido as curadorApellido, e.cupoMaximo as cupoMaximo,
                    count(i) as cantidadInscriptos
             from EventoEntity e left join e.inscripciones i
             where (:desde is null or e.fechaHora >= :desde)
@@ -66,7 +66,7 @@ public interface EventoRepository extends JpaRepository<EventoEntity, Long> {
               and (:tipo is null or e.tipo = :tipo)
               and (:filtrarPasados = false or e.fechaHora <= :ahora)
               and (:filtrarFuturos = false or e.fechaHora > :ahora)
-            group by e.id, e.titulo, e.tipo, e.fechaHora, e.curador.id, e.curador.firstName, e.curador.lastName,
+            group by e.id, e.titulo, e.tipo, e.fechaHora, e.curador.id, e.curador.nombre, e.curador.apellido,
                      e.cupoMaximo
             order by e.fechaHora, e.id
             """)

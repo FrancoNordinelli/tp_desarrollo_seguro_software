@@ -1,6 +1,6 @@
 package com.unla.museo.catalogo.service;
 
-import com.unla.museo.catalogo.entity.FiltroObrasEntity;
+import com.unla.museo.catalogo.entity.FiltroObras;
 import com.unla.museo.catalogo.dto.ArtistaDTO;
 import com.unla.museo.catalogo.dto.ComentarioDTO;
 import com.unla.museo.catalogo.dto.ObraDTO;
@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface CatalogoService {
 
-    List<ObraDTO> buscarObras(FiltroObrasEntity filtro, Integer pagina, Integer tamanio);
+    List<ObraDTO> buscarObras(FiltroObras filtro, Integer pagina, Integer tamanio);
 
     ObraDTO buscarObraPorId(Long id);
 

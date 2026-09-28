@@ -126,7 +126,7 @@ public class CatalogoDataInitializer {
                 ObraEntity obraEntity = new ObraEntity();
                 obraEntity.setTitulo(dato.titulo());
                 obraEntity.setDescripcion(dato.descripcion());
-                obraEntity.setArtistaEntity(artistaEntity);
+                obraEntity.setArtista(artistaEntity);
                 obraEntity.setImagenUrl(dato.imagenUrl());
                 obraEntity.setAnioCreacion(dato.anioCreacion());
                 obraEntity.setTecnica(dato.tecnica());
@@ -138,7 +138,7 @@ public class CatalogoDataInitializer {
 
                 for (DatoComentario datoComentario : dato.comentarios()) {
                     ComentarioEntity comentarioEntity = new ComentarioEntity();
-                    comentarioEntity.setObraEntity(obraEntity);
+                    comentarioEntity.setObra(obraEntity);
                     comentarioEntity.setUsuario(visitantes.get(indiceComentario % visitantes.size()));
                     comentarioEntity.setTexto(datoComentario.texto());
                     comentarioEntity.setFecha(LocalDateTime.parse(datoComentario.fecha() + "T00:00:00"));

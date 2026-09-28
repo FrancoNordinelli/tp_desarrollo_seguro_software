@@ -16,6 +16,6 @@ public interface UsuarioRepository {
 
     Optional<UsuarioEntity> findById(Long id);
 
-    List<UsuarioEntity> findByRoleIdOrderByFirstNameAscLastNameAsc(String roleId);
+    List<UsuarioEntity> findByRolIdOrderByNombreAscApellidoAsc(String roleId);
 
 }

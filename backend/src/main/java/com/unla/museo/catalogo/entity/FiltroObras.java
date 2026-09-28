@@ -1,7 +1,7 @@
 package com.unla.museo.catalogo.entity;
 
 /** Input GraphQL "FiltroObras". Todos los criterios son opcionales y se combinan con AND. */
-public class FiltroObrasEntity {
+public class FiltroObras {
     private String palabraClave, epoca, tecnica, ubicacion;
     private Boolean enExhibicion;
 

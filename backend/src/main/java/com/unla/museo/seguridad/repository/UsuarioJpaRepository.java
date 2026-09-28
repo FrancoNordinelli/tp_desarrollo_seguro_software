@@ -13,6 +13,6 @@ public interface UsuarioJpaRepository extends JpaRepository<UsuarioEntity,Long> 
 
     boolean existsByEmail(String email);
 
-    List<UsuarioEntity> findByRoleIdOrderByFirstNameAscLastNameAsc(String roleId);
+    List<UsuarioEntity> findByRolIdOrderByNombreAscApellidoAsc(String rolId);
 
 }

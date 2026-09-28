@@ -155,7 +155,7 @@ public class EventosDataInitializer {
 
     private void inscribir(InscripcionRepository inscripcionRepository, EventoEntity eventoEntity, UsuarioEntity usuario, LocalDateTime ahora) {
         InscripcionEntity inscripcionEntity = new InscripcionEntity();
-        inscripcionEntity.setEventoEntity(eventoEntity);
+        inscripcionEntity.setEvento(eventoEntity);
         inscripcionEntity.setUsuario(usuario);
         inscripcionEntity.setFechaInscripcion(ahora);
         inscripcionRepository.save(inscripcionEntity);

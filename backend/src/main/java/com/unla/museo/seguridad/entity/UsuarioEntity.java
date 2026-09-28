@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "USERS")
+@Table(name = "USUARIOS")
 public class UsuarioEntity extends AuditoriaEntity {
 
     @Id

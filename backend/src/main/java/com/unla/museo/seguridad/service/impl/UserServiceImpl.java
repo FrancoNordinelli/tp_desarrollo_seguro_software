@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<PersonaTO> getCuradores() {
-        return usuarioRepository.findByRoleIdOrderByFirstNameAscLastNameAsc(Roles.CURADOR).stream()
+        return usuarioRepository.findByRolIdOrderByNombreAscApellidoAsc(Roles.CURADOR).stream()
                 .map(usuario -> new PersonaTO(usuario.getId(), usuario.getNombre() + " " + usuario.getApellido()))
                 .toList();
     }

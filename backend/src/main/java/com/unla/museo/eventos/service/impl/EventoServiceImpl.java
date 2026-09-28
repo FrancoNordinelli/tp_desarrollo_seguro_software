@@ -190,7 +190,7 @@ public class EventoServiceImpl implements EventoService {
         }
 
         InscripcionEntity inscripcionEntity = new InscripcionEntity();
-        inscripcionEntity.setEventoEntity(eventoEntity);
+        inscripcionEntity.setEvento(eventoEntity);
         inscripcionEntity.setUsuario(usuario);
         inscripcionEntity.setFechaInscripcion(ahora);
         inscripcionRepository.save(inscripcionEntity);

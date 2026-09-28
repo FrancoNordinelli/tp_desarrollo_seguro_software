@@ -2,7 +2,7 @@ package com.unla.museo.catalogo.service;
 
 import com.unla.museo.catalogo.entity.ArtistaEntity;
 import com.unla.museo.catalogo.entity.ComentarioEntity;
-import com.unla.museo.catalogo.entity.FiltroObrasEntity;
+import com.unla.museo.catalogo.entity.FiltroObras;
 import com.unla.museo.catalogo.entity.ObraEntity;
 import com.unla.museo.catalogo.dto.ArtistaDTO;
 import com.unla.museo.catalogo.dto.ComentarioDTO;
@@ -43,7 +43,7 @@ public class CatalogoServiceImpl implements CatalogoService {
     }
 
     @Override
-    public List<ObraDTO> buscarObras(FiltroObrasEntity filtro, Integer pagina, Integer tamanio) {
+    public List<ObraDTO> buscarObras(FiltroObras filtro, Integer pagina, Integer tamanio) {
         int paginaEfectiva = pagina != null ? pagina : 0;
         int tamanioEfectivo = tamanio != null ? tamanio : TAMANIO_PAGINA_DEFECTO;
         if (paginaEfectiva < 0) {
@@ -84,12 +84,12 @@ public class CatalogoServiceImpl implements CatalogoService {
         // groupingBy con LinkedHashMap y downstream toList: conserva, dentro
         // de cada obra, el orden por fecha que ya trae la consulta.
         return comentarioRepository.buscarPorObraIds(obraIds).stream()
-                .collect(Collectors.groupingBy(c -> c.getObraEntity().getId(), LinkedHashMap::new,
+                .collect(Collectors.groupingBy(c -> c.getObra().getId(), LinkedHashMap::new,
                         Collectors.mapping(this::aComentarioDTO, Collectors.toList())));
     }
 
     private ObraDTO aObraDTO(ObraEntity o) {
-        return new ObraDTO(o.getId(), o.getTitulo(), o.getArtistaEntity().getId(), o.getImagenUrl(), o.getAnioCreacion(),
+        return new ObraDTO(o.getId(), o.getTitulo(), o.getArtista().getId(), o.getImagenUrl(), o.getAnioCreacion(),
                 o.getTecnica(), o.getDimensiones(), o.getEpoca(), o.getDescripcion(), o.getUbicacion(),
                 o.isEnExhibicion());
     }

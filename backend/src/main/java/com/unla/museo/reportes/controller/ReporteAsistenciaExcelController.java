@@ -1,9 +1,10 @@
-package com.unla.museo.reportes;
+package com.unla.museo.reportes.controller;
 
 import com.unla.museo.eventos.util.EstadoEvento;
 import com.unla.museo.eventos.service.EventoService;
 import com.unla.museo.eventos.util.TipoEvento;
 import com.unla.museo.eventos.dto.FilaReporteEventoDTO;
+import com.unla.museo.reportes.util.ExportadorExcelReporte;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;

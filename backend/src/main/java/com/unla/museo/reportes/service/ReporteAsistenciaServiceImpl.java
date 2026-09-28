@@ -1,10 +1,14 @@
-package com.unla.museo.reportes;
+package com.unla.museo.reportes.service;
 
 import com.unla.museo.comun.errores.SolicitudInvalidaException;
 import com.unla.museo.eventos.util.EstadoEvento;
 import com.unla.museo.eventos.service.EventoService;
 import com.unla.museo.eventos.util.TipoEvento;
 import com.unla.museo.eventos.dto.FilaReporteEventoDTO;
+import com.unla.museo.reportes.util.AgruparPor;
+import com.unla.museo.reportes.dto.EventoPopularDTO;
+import com.unla.museo.reportes.dto.GrupoReporteDTO;
+import com.unla.museo.reportes.dto.ReporteAsistenciaDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -34,7 +38,7 @@ public class ReporteAsistenciaServiceImpl implements ReporteAsistenciaService {
 
     @Override
     public ReporteAsistenciaDTO generar(String desdeTexto, String hastaTexto, TipoEvento tipo, EstadoEvento estado,
-                                         AgruparPor agruparPor) {
+                                        AgruparPor agruparPor) {
         LocalDate desde = parsearFecha(desdeTexto, "desde");
         LocalDate hasta = parsearFecha(hastaTexto, "hasta");
 

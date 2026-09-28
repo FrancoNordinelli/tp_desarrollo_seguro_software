@@ -15,7 +15,7 @@ public interface ComentarioRepository extends JpaRepository<ComentarioEntity, Lo
     @Query("""
             select c from ComentarioEntity c
             join fetch c.usuario
-            where c.obraEntity.id in :obraIds
+            where c.obra.id in :obraIds
             order by c.fecha asc, c.id asc
             """)
     List<ComentarioEntity> buscarPorObraIds(@Param("obraIds") List<Long> obraIds);

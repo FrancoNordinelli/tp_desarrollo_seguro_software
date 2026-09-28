@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @Setter
-@Table(name = "FILTRO_FAVORITO", indexes = @Index(name = "idx_filtro_favorito_usuario_id", columnList = "USUARIO_ID"))
+@Table(name = "FILTROS_FAVORITO", indexes = @Index(name = "idx_filtro_favorito_usuario_id", columnList = "USUARIO_ID"))
 public class FiltroFavoritoEntity {
 
     @Id

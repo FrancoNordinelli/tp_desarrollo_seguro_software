@@ -16,7 +16,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "OBRA", indexes = {
+@Table(name = "OBRAS", indexes = {
         @Index(name = "idx_obra_artista_id", columnList = "ARTISTA_ID")
 })
 public class ObraEntity {
@@ -33,7 +33,7 @@ public class ObraEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ARTISTA_ID", nullable = false)
-    private ArtistaEntity artistaEntity;
+    private ArtistaEntity artista;
 
     @Column(name = "IMAGEN_URL")
     private String imagenUrl;

@@ -1,5 +1,8 @@
-package com.unla.museo.reportes;
+package com.unla.museo.reportes.resolver;
 
+import com.unla.museo.reportes.dto.FiltroReporteInput;
+import com.unla.museo.reportes.dto.ReporteAsistenciaDTO;
+import com.unla.museo.reportes.service.ReporteAsistenciaService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;

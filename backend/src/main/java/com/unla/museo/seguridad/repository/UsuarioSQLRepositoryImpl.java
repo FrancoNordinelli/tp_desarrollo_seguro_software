@@ -35,8 +35,8 @@ public class UsuarioSQLRepositoryImpl implements UsuarioRepository {
     }
 
     @Override
-    public List<UsuarioEntity> findByRoleIdOrderByFirstNameAscLastNameAsc(String roleId) {
-        return this.usuarioJpaRepository.findByRoleIdOrderByFirstNameAscLastNameAsc(roleId);
+    public List<UsuarioEntity> findByRolIdOrderByNombreAscApellidoAsc(String roleId) {
+        return this.usuarioJpaRepository.findByRolIdOrderByNombreAscApellidoAsc(roleId);
     }
 
 

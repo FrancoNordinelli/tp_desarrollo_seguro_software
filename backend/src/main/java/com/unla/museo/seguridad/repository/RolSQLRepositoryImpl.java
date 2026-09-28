@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-@Qualifier("RoleSQLRepositoryImpl")
+@Qualifier("RolSQLRepositoryImpl")
 @RequiredArgsConstructor
 public class RolSQLRepositoryImpl implements RolRepository {
     private final RolJpaRepository rolJpaRepository;

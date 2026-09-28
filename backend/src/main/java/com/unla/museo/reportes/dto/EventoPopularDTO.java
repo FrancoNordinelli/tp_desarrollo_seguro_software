@@ -1,4 +1,4 @@
-package com.unla.museo.reportes;
+package com.unla.museo.reportes.dto;
 
 /** Tipo GraphQL "EventoPopular": id, título y cantidad de inscriptos. */
 public class EventoPopularDTO {

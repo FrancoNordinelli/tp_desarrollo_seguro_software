@@ -1,4 +1,4 @@
-package com.unla.museo.reportes;
+package com.unla.museo.reportes.util;
 
 import com.unla.museo.eventos.util.TipoEvento;
 import com.unla.museo.eventos.dto.FilaReporteEventoDTO;

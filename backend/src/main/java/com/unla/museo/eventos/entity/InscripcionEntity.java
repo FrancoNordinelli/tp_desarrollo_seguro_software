@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "INSCRIPCION",
+@Table(name = "INSCRIPCIONES",
         uniqueConstraints = @UniqueConstraint(name = "uk_inscripcion_evento_usuario", columnNames = {"EVENTO_ID", "USUARIO_ID"}),
         indexes = @Index(name = "idx_inscripcion_usuario_id", columnList = "USUARIO_ID"))
 public class InscripcionEntity {
@@ -21,7 +21,7 @@ public class InscripcionEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "EVENTO_ID", nullable = false)
-    private EventoEntity eventoEntity;
+    private EventoEntity evento;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "USUARIO_ID", nullable = false)

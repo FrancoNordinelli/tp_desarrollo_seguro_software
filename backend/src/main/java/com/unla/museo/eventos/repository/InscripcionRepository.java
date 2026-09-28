@@ -21,17 +21,17 @@ public interface InscripcionRepository extends JpaRepository<InscripcionEntity, 
     List<InscripcionEntity> findByEventoIdOrderByFechaInscripcionAsc(Long eventoId);
 
     @Query("""
-            select i.eventoEntity.id as eventoId, count(i) as cantidad
+            select i.evento.id as eventoId, count(i) as cantidad
             from InscripcionEntity i
-            where i.eventoEntity.id in :eventoIds
-            group by i.eventoEntity.id
+            where i.evento.id in :eventoIds
+            group by i.evento.id
             """)
     List<ConteoPorEvento> contarPorEventos(@Param("eventoIds") List<Long> eventoIds);
 
     @Query("""
-            select i.eventoEntity.id
+            select i.evento.id
             from InscripcionEntity i
-            where i.eventoEntity.id in :eventoIds and i.usuario.id = :usuarioId
+            where i.evento.id in :eventoIds and i.usuario.id = :usuarioId
             """)
     List<Long> buscarEventoIdsInscriptoDeUsuario(@Param("eventoIds") List<Long> eventoIds, @Param("usuarioId") Long usuarioId);
 }

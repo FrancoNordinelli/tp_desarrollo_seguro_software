@@ -1,7 +1,8 @@
-package com.unla.museo.reportes;
+package com.unla.museo.reportes.dto;
 
 import com.unla.museo.eventos.util.EstadoEvento;
 import com.unla.museo.eventos.util.TipoEvento;
+import com.unla.museo.reportes.util.AgruparPor;
 
 /**
  * Argumento GraphQL "FiltroReporte". Clase con setters (no record) a

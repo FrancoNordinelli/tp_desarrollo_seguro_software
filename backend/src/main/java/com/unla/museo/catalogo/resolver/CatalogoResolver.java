@@ -1,6 +1,6 @@
 package com.unla.museo.catalogo.resolver;
 
-import com.unla.museo.catalogo.entity.FiltroObrasEntity;
+import com.unla.museo.catalogo.entity.FiltroObras;
 import com.unla.museo.catalogo.dto.ArtistaDTO;
 import com.unla.museo.catalogo.dto.ComentarioDTO;
 import com.unla.museo.catalogo.dto.ObraDTO;
@@ -24,7 +24,7 @@ public class CatalogoResolver {
     }
 
     @QueryMapping
-    public List<ObraDTO> obras(@Argument FiltroObrasEntity filtro, @Argument Integer pagina, @Argument Integer tamanio) {
+    public List<ObraDTO> obras(@Argument FiltroObras filtro, @Argument Integer pagina, @Argument Integer tamanio) {
         return catalogoService.buscarObras(filtro, pagina, tamanio);
     }
 

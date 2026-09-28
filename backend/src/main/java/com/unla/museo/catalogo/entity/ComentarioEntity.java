@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@Table(name = "COMENTARIO", indexes = {
+@Table(name = "COMENTARIOS", indexes = {
         @Index(name = "idx_comentario_obra_id", columnList = "OBRA_ID")
 })
 public class ComentarioEntity {
@@ -30,7 +30,7 @@ public class ComentarioEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "OBRA_ID", nullable = false)
-    private ObraEntity obraEntity;
+    private ObraEntity obra;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "USUARIO_ID", nullable = false)

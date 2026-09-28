@@ -1,8 +1,14 @@
 package com.unla.museo.eventos;
 
 import com.jayway.jsonpath.JsonPath;
-import com.unla.museo.seguridad.UserEntity;
-import com.unla.museo.seguridad.UserRepository;
+import com.unla.museo.eventos.entity.EventoEntity;
+import com.unla.museo.eventos.entity.InscripcionEntity;
+import com.unla.museo.eventos.repository.FiltroFavoritoRepository;
+import com.unla.museo.eventos.repository.InscripcionRepository;
+import com.unla.museo.eventos.util.TipoEvento;
+import com.unla.museo.eventos.repository.EventoRepository;
+import com.unla.museo.seguridad.entity.UsuarioEntity;
+import com.unla.museo.seguridad.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -50,8 +56,8 @@ class EventosIntegrationTest {
     private FiltroFavoritoRepository filtroFavoritoRepository;
 
     @Autowired
-    @Qualifier("UserSQLRepositoryImpl")
-    private UserRepository userRepository;
+    @Qualifier("UsuarioSQLRepositoryImpl")
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private Clock clock;
@@ -68,28 +74,28 @@ class EventosIntegrationTest {
         return JsonPath.read(resultado.getResponse().getContentAsString(), "$.accessToken");
     }
 
-    private UserEntity usuario(String email) {
-        return userRepository.findByEmail(email).orElseThrow();
+    private UsuarioEntity usuario(String email) {
+        return usuarioRepository.findByEmail(email).orElseThrow();
     }
 
-    private Evento crearEventoDirecto(String titulo, LocalDateTime fechaHora, TipoEvento tipo, int cupoMaximo, UserEntity curador) {
-        Evento evento = new Evento();
-        evento.setTitulo(titulo);
-        evento.setDescripcion("Descripción de prueba para " + titulo);
-        evento.setTipo(tipo);
-        evento.setFechaHora(fechaHora);
-        evento.setDuracionMinutos(60);
-        evento.setCupoMaximo(cupoMaximo);
-        evento.setCurador(curador);
-        return eventoRepository.save(evento);
+    private EventoEntity crearEventoDirecto(String titulo, LocalDateTime fechaHora, TipoEvento tipo, int cupoMaximo, UsuarioEntity curador) {
+        EventoEntity eventoEntity = new EventoEntity();
+        eventoEntity.setTitulo(titulo);
+        eventoEntity.setDescripcion("Descripción de prueba para " + titulo);
+        eventoEntity.setTipo(tipo);
+        eventoEntity.setFechaHora(fechaHora);
+        eventoEntity.setDuracionMinutos(60);
+        eventoEntity.setCupoMaximo(cupoMaximo);
+        eventoEntity.setCurador(curador);
+        return eventoRepository.save(eventoEntity);
     }
 
-    private void inscribirDirecto(Evento evento, UserEntity usuario) {
-        Inscripcion inscripcion = new Inscripcion();
-        inscripcion.setEvento(evento);
-        inscripcion.setUsuario(usuario);
-        inscripcion.setFechaInscripcion(LocalDateTime.now(clock));
-        inscripcionRepository.save(inscripcion);
+    private void inscribirDirecto(EventoEntity eventoEntity, UsuarioEntity usuario) {
+        InscripcionEntity inscripcionEntity = new InscripcionEntity();
+        inscripcionEntity.setEventoEntity(eventoEntity);
+        inscripcionEntity.setUsuario(usuario);
+        inscripcionEntity.setFechaInscripcion(LocalDateTime.now(clock));
+        inscripcionRepository.save(inscripcionEntity);
     }
 
     private String cuerpoEvento(String titulo, TipoEvento tipo, LocalDateTime fechaHora, int duracion, int cupo, Long curadorId) {
@@ -123,21 +129,21 @@ class EventosIntegrationTest {
     @Test
     void visitanteEditaEventoDevuelve403() throws Exception {
         String token = login("visitante@test.com");
-        Evento evento = crearEventoDirecto("Evento para editar (403)", LocalDateTime.now(clock).plusDays(501),
+        EventoEntity eventoEntity = crearEventoDirecto("Evento para editar (403)", LocalDateTime.now(clock).plusDays(501),
                 TipoEvento.CHARLA, 20, usuario("curador@test.com"));
-        mockMvc.perform(put("/api/eventos/" + evento.getId())
+        mockMvc.perform(put("/api/eventos/" + eventoEntity.getId())
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(cuerpoEvento("Editado", TipoEvento.CHARLA, evento.getFechaHora(), 60, 20, usuario("curador@test.com").getId())))
+                        .content(cuerpoEvento("Editado", TipoEvento.CHARLA, eventoEntity.getFechaHora(), 60, 20, usuario("curador@test.com").getId())))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void visitanteBorraEventoDevuelve403() throws Exception {
         String token = login("visitante@test.com");
-        Evento evento = crearEventoDirecto("Evento para borrar (403)", LocalDateTime.now(clock).plusDays(502),
+        EventoEntity eventoEntity = crearEventoDirecto("Evento para borrar (403)", LocalDateTime.now(clock).plusDays(502),
                 TipoEvento.CHARLA, 20, usuario("curador@test.com"));
-        mockMvc.perform(delete("/api/eventos/" + evento.getId())
+        mockMvc.perform(delete("/api/eventos/" + eventoEntity.getId())
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isForbidden());
     }
@@ -246,9 +252,9 @@ class EventosIntegrationTest {
     void listadoFiltraPorTipoYOrdenaPorFecha() throws Exception {
         String token = login("visitante@test.com");
         LocalDateTime base = LocalDateTime.now(clock).plusDays(2100);
-        Evento primero = crearEventoDirecto("Orden - taller 1", base.plusHours(1), TipoEvento.TALLER, 10, usuario("curador@test.com"));
+        EventoEntity primero = crearEventoDirecto("Orden - taller 1", base.plusHours(1), TipoEvento.TALLER, 10, usuario("curador@test.com"));
         crearEventoDirecto("Orden - charla", base.plusHours(2), TipoEvento.CHARLA, 10, usuario("curador@test.com"));
-        Evento tercero = crearEventoDirecto("Orden - taller 2", base.plusHours(3), TipoEvento.TALLER, 10, usuario("curador@test.com"));
+        EventoEntity tercero = crearEventoDirecto("Orden - taller 2", base.plusHours(3), TipoEvento.TALLER, 10, usuario("curador@test.com"));
 
         mockMvc.perform(get("/api/eventos")
                         .header("Authorization", "Bearer " + token)
@@ -284,18 +290,18 @@ class EventosIntegrationTest {
 
     @Test
     void detalleCuradorVeInscriptosYVisitanteNo() throws Exception {
-        Evento evento = crearEventoDirecto("Detalle con inscriptos", LocalDateTime.now(clock).plusDays(2200),
+        EventoEntity eventoEntity = crearEventoDirecto("Detalle con inscriptos", LocalDateTime.now(clock).plusDays(2200),
                 TipoEvento.CHARLA, 10, usuario("curador@test.com"));
-        inscribirDirecto(evento, usuario("visitante@test.com"));
+        inscribirDirecto(eventoEntity, usuario("visitante@test.com"));
 
         String tokenCurador = login("curador@test.com");
-        mockMvc.perform(get("/api/eventos/" + evento.getId()).header("Authorization", "Bearer " + tokenCurador))
+        mockMvc.perform(get("/api/eventos/" + eventoEntity.getId()).header("Authorization", "Bearer " + tokenCurador))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.inscriptos").isArray())
                 .andExpect(jsonPath("$.inscriptos[0].nombre").value("Carlos Hernandez"));
 
         String tokenVisitante = login("visitante@test.com");
-        mockMvc.perform(get("/api/eventos/" + evento.getId()).header("Authorization", "Bearer " + tokenVisitante))
+        mockMvc.perform(get("/api/eventos/" + eventoEntity.getId()).header("Authorization", "Bearer " + tokenVisitante))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.inscriptos").doesNotExist())
                 .andExpect(jsonPath("$.inscripto").value(true));
@@ -312,50 +318,50 @@ class EventosIntegrationTest {
 
     @Test
     void inscribirseDevuelve201YRepetirDevuelve409() throws Exception {
-        Evento evento = crearEventoDirecto("Inscripción simple", LocalDateTime.now(clock).plusDays(2300),
+        EventoEntity eventoEntity = crearEventoDirecto("Inscripción simple", LocalDateTime.now(clock).plusDays(2300),
                 TipoEvento.CHARLA, 5, usuario("curador@test.com"));
         String token = login("visitante@test.com");
 
-        mockMvc.perform(post("/api/eventos/" + evento.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
+        mockMvc.perform(post("/api/eventos/" + eventoEntity.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.inscripto").value(true));
 
-        mockMvc.perform(post("/api/eventos/" + evento.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
+        mockMvc.perform(post("/api/eventos/" + eventoEntity.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
                 .andExpect(status().isConflict());
     }
 
     @Test
     void inscribirseSinCupoDevuelve409() throws Exception {
-        Evento evento = crearEventoDirecto("Sin cupo", LocalDateTime.now(clock).plusDays(2301),
+        EventoEntity eventoEntity = crearEventoDirecto("Sin cupo", LocalDateTime.now(clock).plusDays(2301),
                 TipoEvento.CHARLA, 1, usuario("curador@test.com"));
-        inscribirDirecto(evento, usuario("maria.gonzalez@test.com"));
+        inscribirDirecto(eventoEntity, usuario("maria.gonzalez@test.com"));
         String token = login("visitante@test.com");
 
-        mockMvc.perform(post("/api/eventos/" + evento.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
+        mockMvc.perform(post("/api/eventos/" + eventoEntity.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
                 .andExpect(status().isConflict());
     }
 
     @Test
     void inscribirseAEventoPasadoDevuelve409() throws Exception {
-        Evento evento = crearEventoDirecto("Evento ya pasado", LocalDateTime.now(clock).minusDays(1),
+        EventoEntity eventoEntity = crearEventoDirecto("Evento ya pasado", LocalDateTime.now(clock).minusDays(1),
                 TipoEvento.CHARLA, 20, usuario("curador@test.com"));
         String token = login("visitante@test.com");
 
-        mockMvc.perform(post("/api/eventos/" + evento.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
+        mockMvc.perform(post("/api/eventos/" + eventoEntity.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
                 .andExpect(status().isConflict());
     }
 
     @Test
     void desinscribirseDevuelve204YRepetirTambien() throws Exception {
-        Evento evento = crearEventoDirecto("Para desinscribirse", LocalDateTime.now(clock).plusDays(2302),
+        EventoEntity eventoEntity = crearEventoDirecto("Para desinscribirse", LocalDateTime.now(clock).plusDays(2302),
                 TipoEvento.CHARLA, 20, usuario("curador@test.com"));
         String token = login("visitante@test.com");
-        mockMvc.perform(post("/api/eventos/" + evento.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
+        mockMvc.perform(post("/api/eventos/" + eventoEntity.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(delete("/api/eventos/" + evento.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
+        mockMvc.perform(delete("/api/eventos/" + eventoEntity.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
-        mockMvc.perform(delete("/api/eventos/" + evento.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
+        mockMvc.perform(delete("/api/eventos/" + eventoEntity.getId() + "/inscripcion").header("Authorization", "Bearer " + token))
                 .andExpect(status().isNoContent());
     }
 
@@ -363,26 +369,26 @@ class EventosIntegrationTest {
 
     @Test
     void editarBajandoCupoPorDebajoDeLosInscriptosDevuelve409() throws Exception {
-        Evento evento = crearEventoDirecto("Para bajar el cupo", LocalDateTime.now(clock).plusDays(2400),
+        EventoEntity eventoEntity = crearEventoDirecto("Para bajar el cupo", LocalDateTime.now(clock).plusDays(2400),
                 TipoEvento.TALLER, 5, usuario("curador@test.com"));
-        inscribirDirecto(evento, usuario("visitante@test.com"));
-        inscribirDirecto(evento, usuario("maria.gonzalez@test.com"));
-        inscribirDirecto(evento, usuario("lucia.fernandez@test.com"));
+        inscribirDirecto(eventoEntity, usuario("visitante@test.com"));
+        inscribirDirecto(eventoEntity, usuario("maria.gonzalez@test.com"));
+        inscribirDirecto(eventoEntity, usuario("lucia.fernandez@test.com"));
 
         String token = login("curador@test.com");
-        mockMvc.perform(put("/api/eventos/" + evento.getId())
+        mockMvc.perform(put("/api/eventos/" + eventoEntity.getId())
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(cuerpoEvento("Con menos cupo", TipoEvento.TALLER, evento.getFechaHora(), 60, 2, usuario("curador@test.com").getId())))
+                        .content(cuerpoEvento("Con menos cupo", TipoEvento.TALLER, eventoEntity.getFechaHora(), 60, 2, usuario("curador@test.com").getId())))
                 .andExpect(status().isConflict());
     }
 
     @Test
     void borrarEventoConInscriptosDevuelve204YLuego404() throws Exception {
-        Evento evento = crearEventoDirecto("Para borrar con inscriptos", LocalDateTime.now(clock).plusDays(2401),
+        EventoEntity eventoEntity = crearEventoDirecto("Para borrar con inscriptos", LocalDateTime.now(clock).plusDays(2401),
                 TipoEvento.TALLER, 5, usuario("curador@test.com"));
-        inscribirDirecto(evento, usuario("visitante@test.com"));
-        Long id = evento.getId();
+        inscribirDirecto(eventoEntity, usuario("visitante@test.com"));
+        Long id = eventoEntity.getId();
 
         String token = login("curador@test.com");
         mockMvc.perform(delete("/api/eventos/" + id).header("Authorization", "Bearer " + token))

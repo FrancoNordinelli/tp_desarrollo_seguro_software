@@ -1,7 +1,7 @@
 package com.unla.museo.eventos.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.unla.museo.eventos.TipoEvento;
+import com.unla.museo.eventos.util.TipoEvento;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,7 +1,16 @@
 package com.unla.museo.seguridad;
 
-import com.unla.museo.seguridad.dto.UserCreateRequest;
-import com.unla.museo.seguridad.dto.UserTO;
+import com.unla.museo.seguridad.dto.CrearUsuarioRequest;
+import com.unla.museo.seguridad.dto.UsuarioTO;
+import com.unla.museo.seguridad.dto.mapper.UsuarioMapper;
+import com.unla.museo.seguridad.entity.RolEntity;
+import com.unla.museo.seguridad.entity.UsuarioEntity;
+import com.unla.museo.seguridad.exception.RecursoInexistenteException;
+import com.unla.museo.seguridad.exception.UsuarioExistenteException;
+import com.unla.museo.seguridad.exception.UsuarioNoEncontradoException;
+import com.unla.museo.seguridad.repository.RolRepository;
+import com.unla.museo.seguridad.repository.UsuarioRepository;
+import com.unla.museo.seguridad.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,76 +28,76 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
-    @Mock private UserRepository userRepository;
-    @Mock private RoleRepository roleRepository;
+    @Mock private UsuarioRepository usuarioRepository;
+    @Mock private RolRepository rolRepository;
     @Mock private PasswordEncoder passwordEncoder;
 
     private UserServiceImpl service;
-    private final UserMapper userMapper = new UserMapper();
+    private final UsuarioMapper usuarioMapper = new UsuarioMapper();
 
     @BeforeEach
     void setUp() {
-        service = new UserServiceImpl(userRepository, roleRepository, passwordEncoder, userMapper);
+        service = new UserServiceImpl(usuarioRepository, rolRepository, passwordEncoder, usuarioMapper);
     }
 
     @Test
     void createPersistsUserWithEncodedPasswordAndRole() {
-        UserCreateRequest request = validRequest();
-        RoleEntity role = role("CURADOR", "Curador");
-        when(userRepository.existsByEmail(request.getEmail())).thenReturn(false);
-        when(roleRepository.findById(anyString())).thenReturn(Optional.of(role));
+        CrearUsuarioRequest request = validRequest();
+        RolEntity role = role("CURADOR", "Curador");
+        when(usuarioRepository.existsByEmail(request.getEmail())).thenReturn(false);
+        when(rolRepository.findById(anyString())).thenReturn(Optional.of(role));
         when(passwordEncoder.encode(request.getPassword())).thenReturn("encoded");
-        when(userRepository.save(any(UserEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(usuarioRepository.save(any(UsuarioEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        UserTO result = service.create(request);
+        UsuarioTO result = service.create(request);
 
-        ArgumentCaptor<UserEntity> captor = ArgumentCaptor.forClass(UserEntity.class);
-        verify(userRepository).save(captor.capture());
+        ArgumentCaptor<UsuarioEntity> captor = ArgumentCaptor.forClass(UsuarioEntity.class);
+        verify(usuarioRepository).save(captor.capture());
         assertEquals("encoded", captor.getValue().getPassword());
-        assertSame(role, captor.getValue().getRole());
+        assertSame(role, captor.getValue().getRol());
         assertEquals(request.getEmail(), result.getEmail());
     }
 
     @Test
     void createRejectsDuplicatedEmail() {
-        UserCreateRequest request = validRequest();
-        when(userRepository.existsByEmail(request.getEmail())).thenReturn(true);
+        CrearUsuarioRequest request = validRequest();
+        when(usuarioRepository.existsByEmail(request.getEmail())).thenReturn(true);
 
-        assertThrows(UserAlreadyExistsException.class, () -> service.create(request));
-        verifyNoInteractions(roleRepository, passwordEncoder);
-        verify(userRepository, never()).save(any());
+        assertThrows(UsuarioExistenteException.class, () -> service.create(request));
+        verifyNoInteractions(rolRepository, passwordEncoder);
+        verify(usuarioRepository, never()).save(any());
     }
 
     @Test
     void createRejectsUnknownRole() {
-        UserCreateRequest request = validRequest();
-        when(userRepository.existsByEmail(request.getEmail())).thenReturn(false);
-        when(roleRepository.findById(anyString())).thenReturn(Optional.empty());
+        CrearUsuarioRequest request = validRequest();
+        when(usuarioRepository.existsByEmail(request.getEmail())).thenReturn(false);
+        when(rolRepository.findById(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> service.create(request));
-        verify(userRepository, never()).save(any());
+        assertThrows(RecursoInexistenteException.class, () -> service.create(request));
+        verify(usuarioRepository, never()).save(any());
     }
 
     @Test
     void createNormalizesEmailWithUppercaseAndSpaces() {
-        UserCreateRequest request = validRequest();
+        CrearUsuarioRequest request = validRequest();
         request.setEmail("  Ana@Test.com  ");
-        RoleEntity role = role("VISITANTE", "Visitante");
-        when(userRepository.existsByEmail("ana@test.com")).thenReturn(false);
-        when(roleRepository.findById(anyString())).thenReturn(Optional.of(role));
+        RolEntity role = role("VISITANTE", "Visitante");
+        when(usuarioRepository.existsByEmail("ana@test.com")).thenReturn(false);
+        when(rolRepository.findById(anyString())).thenReturn(Optional.of(role));
         when(passwordEncoder.encode(request.getPassword())).thenReturn("encoded");
-        when(userRepository.save(any(UserEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(usuarioRepository.save(any(UsuarioEntity.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        UserTO result = service.create(request);
+        UsuarioTO result = service.create(request);
 
         assertEquals("ana@test.com", result.getEmail());
-        verify(userRepository).existsByEmail("ana@test.com");
+        verify(usuarioRepository).existsByEmail("ana@test.com");
     }
 
     @Test
     void validateCredentialsReturnsTrueForMatchingPassword() {
-        UserEntity user = user("user@test.com", "encoded");
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        UsuarioEntity user = user("user@test.com", "encoded");
+        when(usuarioRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("Password1!", "encoded")).thenReturn(true);
 
         assertTrue(service.validateCredentials(user.getEmail(), "Password1!"));
@@ -96,8 +105,8 @@ class UserServiceImplTest {
 
     @Test
     void validateCredentialsNormalizesEmailWithUppercaseAndSpaces() {
-        UserEntity user = user("ana@test.com", "encoded");
-        when(userRepository.findByEmail("ana@test.com")).thenReturn(Optional.of(user));
+        UsuarioEntity user = user("ana@test.com", "encoded");
+        when(usuarioRepository.findByEmail("ana@test.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("Password1!", "encoded")).thenReturn(true);
 
         assertTrue(service.validateCredentials("  Ana@Test.com  ", "Password1!"));
@@ -105,8 +114,8 @@ class UserServiceImplTest {
 
     @Test
     void validateCredentialsRejectsWrongPasswordWithGenericMessage() {
-        UserEntity user = user("user@test.com", "encoded");
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        UsuarioEntity user = user("user@test.com", "encoded");
+        when(usuarioRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("wrong", "encoded")).thenReturn(false);
 
         BadCredentialsException ex = assertThrows(BadCredentialsException.class,
@@ -116,7 +125,7 @@ class UserServiceImplTest {
 
     @Test
     void validateCredentialsRejectsUnknownUserWithSameGenericMessage() {
-        when(userRepository.findByEmail("missing@test.com")).thenReturn(Optional.empty());
+        when(usuarioRepository.findByEmail("missing@test.com")).thenReturn(Optional.empty());
 
         BadCredentialsException ex = assertThrows(BadCredentialsException.class,
                 () -> service.validateCredentials("missing@test.com", "Password1!"));
@@ -125,25 +134,25 @@ class UserServiceImplTest {
 
     @Test
     void getByEmailReturnsMappedUser() {
-        UserEntity user = user("user@test.com", "encoded");
-        user.setRole(role("CURADOR", "Curador"));
-        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        UsuarioEntity user = user("user@test.com", "encoded");
+        user.setRol(role("CURADOR", "Curador"));
+        when(usuarioRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
-        UserTO result = service.getByEmail(user.getEmail());
+        UsuarioTO result = service.getByEmail(user.getEmail());
 
         assertEquals(user.getEmail(), result.getEmail());
-        assertEquals("Curador", result.getRole());
+        assertEquals("Curador", result.getRol());
     }
 
     @Test
     void getByEmailRejectsUnknownUser() {
-        when(userRepository.findByEmail("missing@test.com")).thenReturn(Optional.empty());
+        when(usuarioRepository.findByEmail("missing@test.com")).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> service.getByEmail("missing@test.com"));
+        assertThrows(UsuarioNoEncontradoException.class, () -> service.getByEmail("missing@test.com"));
     }
 
-    private UserCreateRequest validRequest() {
-        UserCreateRequest request = new UserCreateRequest();
+    private CrearUsuarioRequest validRequest() {
+        CrearUsuarioRequest request = new CrearUsuarioRequest();
         request.setEmail("user@test.com");
         request.setFirstName("Test");
         request.setLastName("User");
@@ -152,17 +161,17 @@ class UserServiceImplTest {
         return request;
     }
 
-    private UserEntity user(String email, String password) {
-        UserEntity user = new UserEntity();
+    private UsuarioEntity user(String email, String password) {
+        UsuarioEntity user = new UsuarioEntity();
         user.setEmail(email);
         user.setPassword(password);
         return user;
     }
 
-    private RoleEntity role(String id, String name) {
-        RoleEntity role = new RoleEntity();
+    private RolEntity role(String id, String nombre) {
+        RolEntity role = new RolEntity();
         role.setId(id);
-        role.setName(name);
+        role.setNombre(nombre);
         return role;
     }
 }

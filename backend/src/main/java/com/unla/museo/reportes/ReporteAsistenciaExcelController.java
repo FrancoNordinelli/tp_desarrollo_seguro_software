@@ -1,8 +1,8 @@
 package com.unla.museo.reportes;
 
-import com.unla.museo.eventos.EstadoEvento;
-import com.unla.museo.eventos.EventoService;
-import com.unla.museo.eventos.TipoEvento;
+import com.unla.museo.eventos.util.EstadoEvento;
+import com.unla.museo.eventos.service.EventoService;
+import com.unla.museo.eventos.util.TipoEvento;
 import com.unla.museo.eventos.dto.FilaReporteEventoDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

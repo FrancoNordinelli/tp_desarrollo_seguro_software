@@ -1,6 +1,6 @@
 package com.unla.museo.reportes;
 
-import com.unla.museo.eventos.TipoEvento;
+import com.unla.museo.eventos.util.TipoEvento;
 import com.unla.museo.eventos.dto.FilaReporteEventoDTO;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;

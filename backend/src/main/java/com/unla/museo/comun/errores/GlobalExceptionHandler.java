@@ -1,9 +1,9 @@
 package com.unla.museo.comun.errores;
 
-import com.unla.museo.seguridad.ErrorMessage;
-import com.unla.museo.seguridad.ResourceNotFoundException;
-import com.unla.museo.seguridad.UserAlreadyExistsException;
-import com.unla.museo.seguridad.UserNotFoundException;
+import com.unla.museo.seguridad.exception.ErrorMessage;
+import com.unla.museo.seguridad.exception.RecursoInexistenteException;
+import com.unla.museo.seguridad.exception.UsuarioExistenteException;
+import com.unla.museo.seguridad.exception.UsuarioNoEncontradoException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -32,8 +32,8 @@ import java.util.Objects;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<RespuestaError> handleUsuarioYaExiste(UserAlreadyExistsException ex) {
+    @ExceptionHandler(UsuarioExistenteException.class)
+    public ResponseEntity<RespuestaError> handleUsuarioYaExiste(UsuarioExistenteException ex) {
         return construir(HttpStatus.CONFLICT, ex.getMessage(), null);
     }
 
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
         return construir(HttpStatus.CONFLICT, ex.getMessage(), null);
     }
 
-    @ExceptionHandler({UserNotFoundException.class, ResourceNotFoundException.class, RecursoInexistenteException.class})
+    @ExceptionHandler({UsuarioNoEncontradoException.class, RecursoInexistenteException.class, com.unla.museo.comun.errores.RecursoInexistenteException.class})
     public ResponseEntity<RespuestaError> handleRecursoNoEncontrado(RuntimeException ex) {
         return construir(HttpStatus.NOT_FOUND, ex.getMessage(), null);
     }

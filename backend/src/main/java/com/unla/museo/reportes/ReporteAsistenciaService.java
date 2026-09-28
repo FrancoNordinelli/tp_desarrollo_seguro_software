@@ -1,7 +1,7 @@
 package com.unla.museo.reportes;
 
-import com.unla.museo.eventos.EstadoEvento;
-import com.unla.museo.eventos.TipoEvento;
+import com.unla.museo.eventos.util.EstadoEvento;
+import com.unla.museo.eventos.util.TipoEvento;
 
 public interface ReporteAsistenciaService {
 

@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Cubre los casos de la consigna para el catálogo (GraphQL): búsqueda con
- * cada filtro y combinados, paginado, obra(id), seguridad y eficiencia de
+ * cada filtro y combinados, paginado, obraEntity(id), seguridad y eficiencia de
  * consultas. Corre contra H2 (perfil test) con las 9 obras de ejemplo que
  * carga CatalogoDataInitializer; ningún test las modifica, así que se
  * pueden leer sin coordinarse entre tests (a diferencia de ReportesIntegrationTest,
@@ -206,7 +206,7 @@ class CatalogoIntegrationTest {
         assertEquals("BAD_REQUEST", JsonPath.read(cuerpo, "$.errors[0].extensions.classification"));
     }
 
-    // ---------- obra(id) ----------
+    // ---------- obraEntity(id) ----------
 
     @Test
     void obraPorIdExistenteTraeArtistaYComentariosConAutor() throws Exception {
@@ -219,24 +219,24 @@ class CatalogoIntegrationTest {
         String id = JsonPath.read(listado.getResponse().getContentAsString(), "$.data.obras[0].id");
 
         String queryDetalle = """
-                query { obra(id: "%s") { titulo artista { nombre } comentarios { usuario texto fecha } } }
+                query { obraEntity(id: "%s") { titulo artistaEntity { nombre } comentarios { usuario texto fecha } } }
                 """.formatted(id);
         MvcResult resultado = ejecutarGraphQl(queryDetalle, token);
         String cuerpo = resultado.getResponse().getContentAsString();
 
-        assertEquals("La Gioconda", JsonPath.read(cuerpo, "$.data.obra.titulo"));
-        assertEquals("Leonardo da Vinci", JsonPath.read(cuerpo, "$.data.obra.artista.nombre"));
-        List<?> comentarios = JsonPath.read(cuerpo, "$.data.obra.comentarios");
+        assertEquals("La Gioconda", JsonPath.read(cuerpo, "$.data.obraEntity.titulo"));
+        assertEquals("Leonardo da Vinci", JsonPath.read(cuerpo, "$.data.obraEntity.artistaEntity.nombre"));
+        List<?> comentarios = JsonPath.read(cuerpo, "$.data.obraEntity.comentarios");
         assertEquals(2, comentarios.size());
-        assertEquals("Carlos Hernandez", JsonPath.read(cuerpo, "$.data.obra.comentarios[0].usuario"));
-        assertEquals("2026-09-01", JsonPath.read(cuerpo, "$.data.obra.comentarios[0].fecha"));
+        assertEquals("Carlos Hernandez", JsonPath.read(cuerpo, "$.data.obraEntity.comentarios[0].usuario"));
+        assertEquals("2026-09-01", JsonPath.read(cuerpo, "$.data.obraEntity.comentarios[0].fecha"));
     }
 
     @Test
     void obraPorIdInexistenteDevuelveNull() throws Exception {
         String token = login("curador@test.com");
-        MvcResult resultado = ejecutarGraphQl("query { obra(id: \"999999\") { titulo } }", token);
-        assertNull(JsonPath.read(resultado.getResponse().getContentAsString(), "$.data.obra"));
+        MvcResult resultado = ejecutarGraphQl("query { obraEntity(id: \"999999\") { titulo } }", token);
+        assertNull(JsonPath.read(resultado.getResponse().getContentAsString(), "$.data.obraEntity"));
     }
 
     // ---------- seguridad ----------
@@ -254,7 +254,7 @@ class CatalogoIntegrationTest {
     @Test
     void cantidadDeConsultasEsConstanteSinImportarCuantasObrasSePiden() throws Exception {
         String token = login("curador@test.com");
-        String queryCompleta = "query { obras(tamanio: %d) { titulo artista { nombre } comentarios { usuario texto } } }";
+        String queryCompleta = "query { obras(tamanio: %d) { titulo artistaEntity { nombre } comentarios { usuario texto } } }";
 
         Statistics estadisticas = estadisticas();
         estadisticas.clear();

@@ -63,6 +63,18 @@ function Catalogo() {
     setPagina(0)
   }
 
+  function limpiarFiltros() {
+    setFiltros({
+      palabraClave: '',
+      epoca: '',
+      tecnica: '',
+      ubicacion: '',
+      enExhibicion: null
+    })
+
+    setPagina(0)
+  }
+
   function paginaAnterior() {
     if (pagina > 0) {
       setPagina(pagina - 1)
@@ -92,6 +104,7 @@ function Catalogo() {
       <FiltrosObras
         filtros={filtros}
         onCambiarFiltro={cambiarFiltro}
+        onLimpiarFiltros={limpiarFiltros}
       />
 
       <section className="catalogo">

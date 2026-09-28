@@ -2,7 +2,7 @@ import { TIPOS_EVENTO } from '../tiposEvento'
 
 // Controlado y sin URL ni router: lo reusa el listado de eventos y, después,
 // la pantalla de filtros favoritos (docs/contrato-api-eventos.md).
-function FiltrosEventos({ filtros, curadores, onCambiarFiltro }) {
+function FiltrosEventos({ filtros, curadores, onCambiarFiltro, onLimpiarFiltros }) {
   return (
     <section className="filtros">
 
@@ -107,13 +107,7 @@ function FiltrosEventos({ filtros, curadores, onCambiarFiltro }) {
       <button
         className="boton-limpiar"
         type="button"
-        onClick={() => {
-          onCambiarFiltro('desde', '')
-          onCambiarFiltro('hasta', '')
-          onCambiarFiltro('tipo', '')
-          onCambiarFiltro('curadorId', '')
-          onCambiarFiltro('estado', '')
-        }}
+        onClick={onLimpiarFiltros}
       >
         Limpiar filtros
       </button>

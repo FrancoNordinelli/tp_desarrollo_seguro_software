@@ -23,10 +23,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Cubre los casos de la consigna para el catálogo (GraphQL): búsqueda con
- * cada filtro y combinados, paginado, obra(id), seguridad y eficiencia de
+ * cada filtro y combinados, paginado, obraEntity(id), seguridad y eficiencia de
  * consultas. Corre contra H2 (perfil test) con las 9 obras de ejemplo que
  * carga CatalogoDataInitializer; ningún test las modifica, así que se
- * pueden leer sin coordinarse entre tests (a diferencia de ReportesIntegrationTest,
+ * pueden leer sin coordinarse entre tests (a diferencia de
+ * ReportesIntegrationTest,
  * que sí crea eventos propios).
  */
 @SpringBootTest
@@ -47,8 +48,8 @@ class CatalogoIntegrationTest {
     private String login(String email) throws Exception {
         String cuerpo = "{\"email\":\"%s\",\"password\":\"%s\"}".formatted(email, CONTRASENIA);
         MvcResult resultado = mockMvc.perform(post("/api/auth/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(cuerpo))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(cuerpo))
                 .andExpect(status().isOk())
                 .andReturn();
         return JsonPath.read(resultado.getResponse().getContentAsString(), "$.accessToken");
@@ -87,8 +88,8 @@ class CatalogoIntegrationTest {
 
         assertEquals(List.of(
                 "El beso", "El grito", "El nacimiento de Venus", "Guernica", "La Gioconda",
-                "La joven de la perla", "La noche estrellada", "La persistencia de la memoria", "Las meninas"
-        ), titulos(cuerpo));
+                "La joven de la perla", "La noche estrellada", "La persistencia de la memoria", "Las meninas"),
+                titulos(cuerpo));
     }
 
     // ---------- cada filtro solo ----------
@@ -130,7 +131,8 @@ class CatalogoIntegrationTest {
                 query { obras(filtro: { epoca: "renacimiento" }) { titulo } }
                 """;
         MvcResult resultado = ejecutarGraphQl(query, token);
-        assertEquals(List.of("El nacimiento de Venus", "La Gioconda"), titulos(resultado.getResponse().getContentAsString()));
+        assertEquals(List.of("El nacimiento de Venus", "La Gioconda"),
+                titulos(resultado.getResponse().getContentAsString()));
     }
 
     @Test
@@ -173,7 +175,8 @@ class CatalogoIntegrationTest {
                 query { obras(filtro: { epoca: "renacimiento", enExhibicion: true }) { titulo } }
                 """;
         MvcResult conTrue = ejecutarGraphQl(queryTrue, token);
-        assertEquals(List.of("El nacimiento de Venus", "La Gioconda"), titulos(conTrue.getResponse().getContentAsString()));
+        assertEquals(List.of("El nacimiento de Venus", "La Gioconda"),
+                titulos(conTrue.getResponse().getContentAsString()));
 
         // Mismo filtro de época, pero en depósito: ninguna de las dos obras del
         // Renacimiento está ahí, así que el AND debe dar lista vacía (si el
@@ -195,7 +198,8 @@ class CatalogoIntegrationTest {
         assertEquals(List.of("El beso", "El grito"), titulos(pagina0.getResponse().getContentAsString()));
 
         MvcResult pagina1 = ejecutarGraphQl("query { obras(tamanio: 2, pagina: 1) { titulo } }", token);
-        assertEquals(List.of("El nacimiento de Venus", "Guernica"), titulos(pagina1.getResponse().getContentAsString()));
+        assertEquals(List.of("El nacimiento de Venus", "Guernica"),
+                titulos(pagina1.getResponse().getContentAsString()));
     }
 
     @Test
@@ -206,7 +210,7 @@ class CatalogoIntegrationTest {
         assertEquals("BAD_REQUEST", JsonPath.read(cuerpo, "$.errors[0].extensions.classification"));
     }
 
-    // ---------- obra(id) ----------
+    // ---------- obraEntity(id) ----------
 
     @Test
     void obraPorIdExistenteTraeArtistaYComentariosConAutor() throws Exception {
@@ -244,8 +248,8 @@ class CatalogoIntegrationTest {
     @Test
     void sinTokenDevuelve401() throws Exception {
         mockMvc.perform(post("/graphql")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(cuerpoGraphQl("query { obras { titulo } }")))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(cuerpoGraphQl("query { obras { titulo } }")))
                 .andExpect(status().isUnauthorized());
     }
 

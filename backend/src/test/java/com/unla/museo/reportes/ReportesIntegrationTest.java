@@ -1,14 +1,13 @@
 package com.unla.museo.reportes;
 
 import com.jayway.jsonpath.JsonPath;
-import com.unla.museo.seguridad.UserEntity;
-import com.unla.museo.eventos.Evento;
-import com.unla.museo.eventos.EventoRepository;
-import com.unla.museo.eventos.Inscripcion;
-import com.unla.museo.eventos.InscripcionRepository;
-import com.unla.museo.eventos.TipoEvento;
-import com.unla.museo.seguridad.UserRepository;
-import org.apache.poi.ss.usermodel.Cell;
+import com.unla.museo.eventos.entity.EventoEntity;
+import com.unla.museo.seguridad.entity.UsuarioEntity;
+import com.unla.museo.eventos.repository.EventoRepository;
+import com.unla.museo.eventos.entity.InscripcionEntity;
+import com.unla.museo.eventos.repository.InscripcionRepository;
+import com.unla.museo.eventos.util.TipoEvento;
+import com.unla.museo.seguridad.repository.UsuarioRepository;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
@@ -68,8 +67,8 @@ class ReportesIntegrationTest {
     private InscripcionRepository inscripcionRepository;
 
     @Autowired
-    @Qualifier("UserSQLRepositoryImpl")
-    private UserRepository userRepository;
+    @Qualifier("UsuarioSQLRepositoryImpl")
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private Clock clock;
@@ -86,29 +85,29 @@ class ReportesIntegrationTest {
         return JsonPath.read(resultado.getResponse().getContentAsString(), "$.accessToken");
     }
 
-    private UserEntity usuario(String email) {
-        return userRepository.findByEmail(email).orElseThrow();
+    private UsuarioEntity usuario(String email) {
+        return usuarioRepository.findByEmail(email).orElseThrow();
     }
 
-    private Evento crearEvento(String titulo, LocalDateTime fechaHora, TipoEvento tipo, int cupoMaximo) {
-        Evento evento = new Evento();
-        evento.setTitulo(titulo);
-        evento.setDescripcion("Descripción de prueba para " + titulo);
-        evento.setTipo(tipo);
-        evento.setFechaHora(fechaHora);
-        evento.setDuracionMinutos(60);
-        evento.setCupoMaximo(cupoMaximo);
-        evento.setCurador(usuario("curador@test.com"));
-        return eventoRepository.save(evento);
+    private EventoEntity crearEvento(String titulo, LocalDateTime fechaHora, TipoEvento tipo, int cupoMaximo) {
+        EventoEntity eventoEntity = new EventoEntity();
+        eventoEntity.setTitulo(titulo);
+        eventoEntity.setDescripcion("Descripción de prueba para " + titulo);
+        eventoEntity.setTipo(tipo);
+        eventoEntity.setFechaHora(fechaHora);
+        eventoEntity.setDuracionMinutos(60);
+        eventoEntity.setCupoMaximo(cupoMaximo);
+        eventoEntity.setCurador(usuario("curador@test.com"));
+        return eventoRepository.save(eventoEntity);
     }
 
-    private void inscribir(Evento evento, int cantidad) {
+    private void inscribir(EventoEntity eventoEntity, int cantidad) {
         for (int i = 0; i < cantidad; i++) {
-            Inscripcion inscripcion = new Inscripcion();
-            inscripcion.setEvento(evento);
-            inscripcion.setUsuario(usuario(VISITANTES_DE_EJEMPLO.get(i)));
-            inscripcion.setFechaInscripcion(LocalDateTime.now(clock));
-            inscripcionRepository.save(inscripcion);
+            InscripcionEntity inscripcionEntity = new InscripcionEntity();
+            inscripcionEntity.setEvento(eventoEntity);
+            inscripcionEntity.setUsuario(usuario(VISITANTES_DE_EJEMPLO.get(i)));
+            inscripcionEntity.setFechaInscripcion(LocalDateTime.now(clock));
+            inscripcionRepository.save(inscripcionEntity);
         }
     }
 
@@ -132,8 +131,8 @@ class ReportesIntegrationTest {
     @Test
     void agruparPorMesCalculaCantidadInscriptosYPromedioYPopulares() throws Exception {
         LocalDateTime base = LocalDateTime.now(clock).plusYears(20).withDayOfMonth(1).plusDays(4);
-        Evento tallerSinInscriptos = crearEvento("Taller cupo 10 sin inscriptos", base.plusDays(1), TipoEvento.TALLER, 10);
-        Evento tallerConDiezInscriptos = crearEvento("Taller cupo 20 con 10 inscriptos", base.plusDays(2), TipoEvento.TALLER, 20);
+        EventoEntity tallerSinInscriptos = crearEvento("Taller cupo 10 sin inscriptos", base.plusDays(1), TipoEvento.TALLER, 10);
+        EventoEntity tallerConDiezInscriptos = crearEvento("Taller cupo 20 con 10 inscriptos", base.plusDays(2), TipoEvento.TALLER, 20);
         inscribir(tallerConDiezInscriptos, 10);
 
         String desde = base.toLocalDate().withDayOfMonth(1).toString();
@@ -283,8 +282,8 @@ class ReportesIntegrationTest {
     @Test
     void excelCuradorDevuelve200ConHojasPorTipoYPorcentajesCorrectos() throws Exception {
         LocalDateTime base = LocalDateTime.now(clock).plusYears(28).withDayOfMonth(20);
-        Evento tallerSinInscriptos = crearEvento("Excel taller sin inscriptos", base.plusDays(1), TipoEvento.TALLER, 10);
-        Evento tallerConDiezInscriptos = crearEvento("Excel taller con diez", base.plusDays(2), TipoEvento.TALLER, 20);
+        EventoEntity tallerSinInscriptos = crearEvento("Excel taller sin inscriptos", base.plusDays(1), TipoEvento.TALLER, 10);
+        EventoEntity tallerConDiezInscriptos = crearEvento("Excel taller con diez", base.plusDays(2), TipoEvento.TALLER, 20);
         inscribir(tallerConDiezInscriptos, 10);
 
         String token = login("curador@test.com");

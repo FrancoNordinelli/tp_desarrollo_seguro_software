@@ -1,6 +1,6 @@
 package com.unla.museo.eventos.dto;
 
-import com.unla.museo.seguridad.UserEntity;
+import com.unla.museo.seguridad.entity.UsuarioEntity;
 
 /**
  * Solo id y nombre y apellido: nunca email, teléfono ni password. Se usa
@@ -8,7 +8,7 @@ import com.unla.museo.seguridad.UserEntity;
  */
 public record PersonaDTO(Long id, String nombre) {
 
-    public static PersonaDTO desde(UserEntity usuario) {
-        return new PersonaDTO(usuario.getId(), usuario.getFirstName() + " " + usuario.getLastName());
+    public static PersonaDTO desde(UsuarioEntity usuario) {
+        return new PersonaDTO(usuario.getId(), usuario.getNombre() + " " + usuario.getApellido());
     }
 }

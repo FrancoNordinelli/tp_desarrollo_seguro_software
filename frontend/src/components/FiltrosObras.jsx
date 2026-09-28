@@ -1,4 +1,4 @@
-function FiltrosObras({ filtros, onCambiarFiltro }) {
+function FiltrosObras({ filtros, onCambiarFiltro, onLimpiarFiltros }) {
   return (
     <section className="filtros">
 
@@ -116,13 +116,7 @@ function FiltrosObras({ filtros, onCambiarFiltro }) {
       <button
         className="boton-limpiar"
         type="button"
-        onClick={() => {
-          onCambiarFiltro('palabraClave', '')
-          onCambiarFiltro('epoca', '')
-          onCambiarFiltro('tecnica', '')
-          onCambiarFiltro('ubicacion', '')
-          onCambiarFiltro('enExhibicion', null)
-        }}
+        onClick={onLimpiarFiltros}
       >
         Limpiar filtros
       </button>

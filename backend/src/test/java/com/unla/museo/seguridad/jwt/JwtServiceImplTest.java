@@ -1,9 +1,10 @@
 package com.unla.museo.seguridad.jwt;
 
-import com.unla.museo.seguridad.RoleEntity;
-import com.unla.museo.seguridad.UserEntity;
-import com.unla.museo.seguridad.UserNotFoundException;
-import com.unla.museo.seguridad.UserRepository;
+import com.unla.museo.seguridad.entity.RolEntity;
+import com.unla.museo.seguridad.entity.UsuarioEntity;
+import com.unla.museo.seguridad.exception.UsuarioNoEncontradoException;
+import com.unla.museo.seguridad.repository.UsuarioRepository;
+import com.unla.museo.seguridad.service.jwt.JwtServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -29,20 +30,20 @@ class JwtServiceImplTest {
 
     private static final String SECRET = "test-secret-with-at-least-32-characters";
 
-    @Mock private UserRepository userRepository;
+    @Mock private UsuarioRepository usuarioRepository;
     private JwtServiceImpl service;
 
     @BeforeEach
     void setUp() {
-        service = new JwtServiceImpl(userRepository);
+        service = new JwtServiceImpl(usuarioRepository);
         ReflectionTestUtils.setField(service, "secret", SECRET);
         ReflectionTestUtils.setField(service, "accessTokenExpirationMs", 900_000L);
     }
 
     @Test
     void generateAccessTokenStoresSubjectAndSingleRole() {
-        UserEntity user = userWithRole("ADMINISTRADOR");
-        when(userRepository.findByEmail("user@test.com")).thenReturn(Optional.of(user));
+        UsuarioEntity user = userWithRole("ADMINISTRADOR");
+        when(usuarioRepository.findByEmail("user@test.com")).thenReturn(Optional.of(user));
 
         String token = service.generateAccessToken("user@test.com");
         Claims claims = service.extractAllClaims(token);
@@ -56,9 +57,9 @@ class JwtServiceImplTest {
 
     @Test
     void invalidSignatureIsRejectedByExtractAllClaims() {
-        when(userRepository.findByEmail("user@test.com")).thenReturn(Optional.of(userWithRole("CURADOR")));
+        when(usuarioRepository.findByEmail("user@test.com")).thenReturn(Optional.of(userWithRole("CURADOR")));
         String token = service.generateAccessToken("user@test.com");
-        JwtServiceImpl otherService = new JwtServiceImpl(userRepository);
+        JwtServiceImpl otherService = new JwtServiceImpl(usuarioRepository);
         ReflectionTestUtils.setField(otherService, "secret", "other-secret-with-at-least-32-characters");
 
         assertThrows(SignatureException.class, () -> otherService.extractAllClaims(token));
@@ -80,24 +81,24 @@ class JwtServiceImplTest {
 
     @Test
     void unknownUserCannotReceiveToken() {
-        when(userRepository.findByEmail("missing@test.com")).thenReturn(Optional.empty());
+        when(usuarioRepository.findByEmail("missing@test.com")).thenReturn(Optional.empty());
 
-        assertThrows(UserNotFoundException.class, () -> service.generateAccessToken("missing@test.com"));
+        assertThrows(UsuarioNoEncontradoException.class, () -> service.generateAccessToken("missing@test.com"));
     }
 
     @Test
     void userWithoutRoleCannotReceiveToken() {
-        UserEntity user = new UserEntity();
-        when(userRepository.findByEmail("user@test.com")).thenReturn(Optional.of(user));
+        UsuarioEntity user = new UsuarioEntity();
+        when(usuarioRepository.findByEmail("user@test.com")).thenReturn(Optional.of(user));
 
         assertThrows(IllegalStateException.class, () -> service.generateAccessToken("user@test.com"));
     }
 
-    private UserEntity userWithRole(String id) {
-        RoleEntity role = new RoleEntity();
+    private UsuarioEntity userWithRole(String id) {
+        RolEntity role = new RolEntity();
         role.setId(id);
-        UserEntity user = new UserEntity();
-        user.setRole(role);
+        UsuarioEntity user = new UsuarioEntity();
+        user.setRol(role);
         return user;
     }
 }

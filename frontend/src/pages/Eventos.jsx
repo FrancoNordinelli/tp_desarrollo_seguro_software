@@ -115,6 +115,16 @@ function Eventos({ usuario }) {
     setSearchParams(params)
   }
 
+  function limpiarFiltros() {
+    const params = new URLSearchParams()
+    // Conservar solo la página si existe, o eliminar todos los filtros
+    const pagina = searchParams.get('pagina')
+    if (pagina) {
+      params.set('pagina', pagina)
+    }
+    setSearchParams(params)
+  }
+
   function irAPagina(numero) {
     const params = new URLSearchParams(searchParams)
 
@@ -182,6 +192,7 @@ function Eventos({ usuario }) {
         filtros={{ desde, hasta, tipo, curadorId, estado }}
         curadores={curadores}
         onCambiarFiltro={cambiarFiltro}
+        onLimpiarFiltros={limpiarFiltros}
       />
 
       <section className="eventos">

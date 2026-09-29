@@ -1,5 +1,6 @@
 package com.unla.museo.seguridad;
 
+import com.unla.museo.comun.errores.RecursoInexistenteException;
 import com.unla.museo.seguridad.dto.CrearUsuarioRequest;
 import com.unla.museo.seguridad.dto.UsuarioTO;
 import com.unla.museo.seguridad.dto.mapper.UsuarioMapper;
@@ -153,9 +154,9 @@ class UsuarioServiceImplTest {
     private CrearUsuarioRequest validRequest() {
         CrearUsuarioRequest request = new CrearUsuarioRequest();
         request.setEmail("user@test.com");
-        request.setFirstName("Test");
-        request.setLastName("User");
-        request.setPhoneNumber("123");
+        request.setNombre("Test");
+        request.setApellido("User");
+        request.setTelefono("123");
         request.setPassword("Password1!");
         return request;
     }

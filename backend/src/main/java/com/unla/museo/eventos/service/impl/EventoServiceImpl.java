@@ -251,4 +251,39 @@ public class EventoServiceImpl implements EventoService {
         UsuarioEntity usuarioActual = usuarioActualService.obtenerPorEmail(authentication.getName());
         return new HashSet<>(inscripcionRepository.buscarEventoIdsInscriptoDeUsuario(ids, usuarioActual.getId()));
     }
+
+    @Override
+    @Transactional
+    public EventoDTO modificarCupo(Long id, Integer nuevoCupo) {
+        // 1. Adquirir el evento usando el bloqueo pesimista que ya tenés definido
+        EventoEntity eventoEntity = eventoRepository.buscarPorIdConBloqueo(id)
+                .orElseThrow(() -> new RecursoInexistenteException("El evento no existe"));
+
+        // 2. Rechazar cambios si el evento ya inició (usando el clock inyectado)
+        LocalDateTime ahora = LocalDateTime.now(clock);
+        if (!eventoEntity.getFechaHora().isAfter(ahora)) {
+            throw new ConflictoException("No se puede modificar el cupo de un evento que ya inició");
+        }
+
+        // 3. No bajar el cupo por debajo de la cantidad de inscriptos actuales
+        long cantidadInscriptos = inscripcionRepository.countByEventoId(id);
+        if (nuevoCupo < cantidadInscriptos) {
+            throw new ConflictoException(
+                "El nuevo cupo (" + nuevoCupo + ") no puede ser menor a los inscriptos actuales (" + cantidadInscriptos + ")"
+            );
+        }
+
+        // 4. Actualizar el valor y guardar
+        eventoEntity.setCupoMaximo(nuevoCupo);
+        EventoEntity guardado = eventoRepository.save(eventoEntity);
+
+        // 5. Mapear a DTO recuperando la lista de inscriptos (idéntico a cómo lo hace tu método editar)
+        List<PersonaDTO> inscriptosDTO = inscripcionRepository.findByEventoIdOrderByFechaInscripcionAsc(id).stream()
+                .map(inscripcion -> PersonaDTO.desde(inscripcion.getUsuario()))
+                .toList();
+
+        return new EventoDTO(guardado.getId(), guardado.getTitulo(), guardado.getDescripcion(), guardado.getTipo(),
+                guardado.getFechaHora(), guardado.getDuracionMinutos(), guardado.getCupoMaximo(),
+                PersonaDTO.desde(guardado.getCurador()), cantidadInscriptos, false, inscriptosDTO);
+    }
 }

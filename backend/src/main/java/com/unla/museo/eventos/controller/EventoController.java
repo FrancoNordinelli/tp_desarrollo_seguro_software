@@ -5,6 +5,7 @@ import com.unla.museo.eventos.service.EventoService;
 import com.unla.museo.eventos.util.TipoEvento;
 import com.unla.museo.eventos.dto.EventoDTO;
 import com.unla.museo.eventos.dto.EventoRequest;
+import com.unla.museo.eventos.dto.ModificarCupoRequest;
 import com.unla.museo.eventos.dto.PaginaEventosDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -87,5 +88,16 @@ public class EventoController {
     public ResponseEntity<Void> desinscribirse(@PathVariable Long id, Authentication authentication) {
         eventoService.desinscribirse(id, authentication);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Modificar únicamente el cupo máximo de un evento")
+    @PreAuthorize("hasAnyRole('CURADOR','ADMINISTRADOR')")
+    @PatchMapping("/{id}/cupo")
+    public ResponseEntity<EventoDTO> modificarCupo(
+            @PathVariable Long id, 
+            @Valid @RequestBody ModificarCupoRequest request) {
+        
+        // Extraemos el int del record y llamamos al servicio intacto
+        return ResponseEntity.ok(eventoService.modificarCupo(id, request.cupoMaximo()));
     }
 }

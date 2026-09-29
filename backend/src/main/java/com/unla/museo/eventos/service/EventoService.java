@@ -29,6 +29,8 @@ public interface EventoService {
 
     EventoDTO editar(Long id, EventoRequest request);
 
+    EventoDTO modificarCupo(Long id, Integer nuevoCupo);
+
     void borrar(Long id);
 
     void inscribirse(Long eventoId, Authentication authentication);

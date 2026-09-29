@@ -46,6 +46,10 @@ function Favorito({ favorito, curadores, onEliminado, onNoExiste, onActualizado 
     setFiltros((filtrosActuales) => ({ ...filtrosActuales, [campo]: valor }))
   }
 
+  function limpiarFiltros() {
+    setFiltros({ desde: '', hasta: '', tipo: '', curadorId: '', estado: '' })
+  }
+
   async function guardar(e) {
     e.preventDefault()
     setGuardando(true)
@@ -131,6 +135,7 @@ function Favorito({ favorito, curadores, onEliminado, onNoExiste, onActualizado 
             filtros={filtros}
             curadores={curadores}
             onCambiarFiltro={cambiarFiltro}
+            onLimpiarFiltros={limpiarFiltros}
           />
 
           {errorGuardar && (

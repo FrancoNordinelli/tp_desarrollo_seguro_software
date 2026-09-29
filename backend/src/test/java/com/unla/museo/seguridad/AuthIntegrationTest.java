@@ -51,8 +51,8 @@ class AuthIntegrationTest {
     @Test
     void registroConEmailEnMayusculasYEspaciosPermiteLoguearseEnMinuscula() throws Exception {
         String emailConEspacios = "  Nueva.Persona@Test.com  ";
-        String cuerpoRegistro = ("{\"email\":\"%s\",\"firstName\":\"Nueva\",\"lastName\":\"Persona\"," +
-                "\"phoneNumber\":\"1122334455\",\"password\":\"%s\"}").formatted(emailConEspacios, CONTRASENIA);
+        String cuerpoRegistro = ("{\"email\":\"%s\",\"nombre\":\"Nueva\",\"apellido\":\"Persona\"," +
+                "\"telefono\":\"1122334455\",\"password\":\"%s\"}").formatted(emailConEspacios, CONTRASENIA);
 
         mockMvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON).content(cuerpoRegistro))
                 .andExpect(status().isCreated());

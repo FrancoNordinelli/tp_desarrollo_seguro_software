@@ -1,19 +1,19 @@
 package com.unla.museo.seguridad.service.impl;
 
 
+import com.unla.museo.comun.errores.RecursoInexistenteException;
 import com.unla.museo.seguridad.dto.CrearUsuarioRequest;
 import com.unla.museo.seguridad.dto.PersonaTO;
 import com.unla.museo.seguridad.dto.UsuarioTO;
 import com.unla.museo.seguridad.dto.mapper.UsuarioMapper;
 import com.unla.museo.seguridad.entity.RolEntity;
 import com.unla.museo.seguridad.entity.UsuarioEntity;
-import com.unla.museo.seguridad.exception.ErrorMessage;
-import com.unla.museo.seguridad.exception.RecursoInexistenteException;
+import com.unla.museo.comun.errores.MensajesError;
 import com.unla.museo.seguridad.exception.UsuarioExistenteException;
 import com.unla.museo.seguridad.exception.UsuarioNoEncontradoException;
 import com.unla.museo.seguridad.repository.RolRepository;
 import com.unla.museo.seguridad.repository.UsuarioRepository;
-import com.unla.museo.seguridad.service.UserService;
+import com.unla.museo.seguridad.service.UsuarioService;
 import com.unla.museo.seguridad.util.Roles;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,13 +25,13 @@ import java.util.List;
 
 @Service
 @Qualifier("UserServiceImpl")
-public class UserServiceImpl implements UserService {
+public class UsuarioServiceImpl implements UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
     private final PasswordEncoder passwordEncoder;
     private final UsuarioMapper usuarioMapper;
-    public UserServiceImpl(
+    public UsuarioServiceImpl(
             @Qualifier("UsuarioSQLRepositoryImpl") UsuarioRepository usuarioRepository,
             @Qualifier("RolSQLRepositoryImpl") RolRepository rolRepository,
            PasswordEncoder passwordEncoder, UsuarioMapper usuarioMapper) {
@@ -47,10 +47,10 @@ public class UserServiceImpl implements UserService {
         // mayúsculas o espacios no cree una cuenta duplicada.
         request.setEmail(normalizarEmail(request.getEmail()));
         if (usuarioRepository.existsByEmail(request.getEmail())) {
-            throw new UsuarioExistenteException(ErrorMessage.User.CONFLICT_EMAIL);
+            throw new UsuarioExistenteException(MensajesError.Usuario.CONFLICTO_EMAIL);
         }
         RolEntity rolEntity = rolRepository.findById(Roles.VISITANTE)
-                .orElseThrow(() -> new RecursoInexistenteException(ErrorMessage.User.Role.NOT_FOUND));
+                .orElseThrow(() -> new RecursoInexistenteException(MensajesError.Usuario.Rol.NO_ENCONRTADO));
         UsuarioEntity user = usuarioMapper.toEntity(request, rolEntity,request.getEmail());
         user.setPassword(this.passwordEncoder.encode(request.getPassword()));
         user.setCreacion(LocalDateTime.now());
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
                 .map(user -> passwordEncoder.matches(rawPassword, user.getPassword()))
                 .orElse(false);
         if (!credencialesValidas) {
-            throw new BadCredentialsException(ErrorMessage.AUTH_FAILED);
+            throw new BadCredentialsException(MensajesError.FALLO_AUTENTICACION);
         }
         return true;
     }
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
     public UsuarioTO getByEmail(String userEmail) {
         UsuarioEntity user = usuarioRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UsuarioNoEncontradoException(ErrorMessage.User.NOT_FOUND));
+                .orElseThrow(() -> new UsuarioNoEncontradoException(MensajesError.Usuario.NO_ENCONRTADO));
         return usuarioMapper.toResponse(user);
     }
 

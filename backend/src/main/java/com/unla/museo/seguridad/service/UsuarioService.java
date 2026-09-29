@@ -7,7 +7,7 @@ import com.unla.museo.seguridad.dto.UsuarioTO;
 import java.util.List;
 
 
-public interface UserService {
+public interface UsuarioService {
 
     UsuarioTO create(CrearUsuarioRequest request);
 

@@ -5,7 +5,7 @@ import com.unla.museo.seguridad.dto.LoginRequest;
 import com.unla.museo.seguridad.dto.CrearUsuarioRequest;
 import com.unla.museo.seguridad.dto.UsuarioTO;
 import com.unla.museo.seguridad.service.jwt.JwtServiceImpl;
-import com.unla.museo.seguridad.service.impl.UserServiceImpl;
+import com.unla.museo.seguridad.service.impl.UsuarioServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.*;
 class AutenticacionControllerTest {
 
     @Mock
-    private UserServiceImpl userService;
+    private UsuarioServiceImpl userService;
 
     @Mock
     private JwtServiceImpl jwtService;

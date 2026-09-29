@@ -117,11 +117,7 @@ function Eventos({ usuario }) {
 
   function limpiarFiltros() {
     const params = new URLSearchParams()
-    // Conservar solo la página si existe, o eliminar todos los filtros
-    const pagina = searchParams.get('pagina')
-    if (pagina) {
-      params.set('pagina', pagina)
-    }
+    // Al limpiar filtros se vuelve a la página 1 (no se conserva la página actual)
     setSearchParams(params)
   }
 

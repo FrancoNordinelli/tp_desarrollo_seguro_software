@@ -7,7 +7,7 @@ export const ROLES = {
 // /api/auth/me devuelve el nombre del rol, que según cómo se cargó la base
 // puede venir como "Curador" o "CURADOR"; por eso se compara en mayúsculas.
 export function tieneRol(usuario, ...roles) {
-  const rol = usuario?.role?.toUpperCase()
+  const rol = usuario?.rol?.toUpperCase()
   return rol !== undefined && roles.includes(rol)
 }
 

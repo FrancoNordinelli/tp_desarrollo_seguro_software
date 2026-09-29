@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "127adf62-e289-43c0-b6a7-a3f835a3f9d0",
     "name": "Museo Virtual — API",
-    "description": "Todas las rutas REST y ejemplos de GraphQL. Primero ejecutar un login: guarda el token y el resto de las peticiones lo usa. La contraseña de los usuarios de prueba está en backend/src/main/java/com/unla/museo/seguridad/DataInitializer.java; completarla en la variable 'clave'.",
+    "description": "Todas las rutas REST y ejemplos de GraphQL. Primero ejecutar un login: guarda el token y el resto de las peticiones lo usa. La contraseña de los usuarios de prueba está en backend/src/main/java/com/unla/museo/seguridad/config/DataInitializer.java; completarla en la variable 'clave'.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {

@@ -65,7 +65,7 @@ Hace falta **Docker Desktop**, **JDK 21 o superior** y **Node 20.19+ o 22.12+**.
 
 ## Usuarios de prueba
 
-Los crea el backend al arrancar (`backend/src/main/java/com/unla/museo/configuration/DataInitializer.java`,
+Los crea el backend al arrancar (`backend/src/main/java/com/unla/museo/seguridad/config/DataInitializer.java`,
 donde también está la contraseña, la misma para los tres):
 
 | Email | Rol |

@@ -72,7 +72,7 @@ function Navegacion({ user, onLogout }) {
         <span className="usuario-info">
           {user?.nombre} {user?.apellido}
           {' · '}
-          {user?.role}
+          {user?.rol}
         </span>
 
         <button

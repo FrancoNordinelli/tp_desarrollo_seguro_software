@@ -64,7 +64,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"nuevo@test.com\",\n  \"firstName\": \"Nuevo\",\n  \"lastName\": \"Usuario\",\n  \"phoneNumber\": null,\n  \"password\": \"Museo#2026ok\"\n}",
+              "raw": "{\n  \"email\": \"nuevo@test.com\",\n  \"nombre\": \"Nuevo\",\n  \"apellido\": \"Usuario\",\n  \"telefono\": null,\n  \"password\": \"Museo#2026ok\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

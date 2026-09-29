@@ -6,7 +6,7 @@ import com.unla.museo.seguridad.dto.CrearUsuarioRequest;
 import com.unla.museo.seguridad.dto.LoginResponse;
 import com.unla.museo.seguridad.dto.UsuarioTO;
 import com.unla.museo.seguridad.service.jwt.JwtServiceImpl;
-import com.unla.museo.seguridad.service.impl.UserServiceImpl;
+import com.unla.museo.seguridad.service.impl.UsuarioServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -21,10 +21,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RestController
 @Tag(name = "Autenticación", description = "Registro, login y usuario autenticado")
 public class AutenticacionController {
-    private final UserServiceImpl userService;
+    private final UsuarioServiceImpl userService;
     private final JwtServiceImpl jwtService;
 
-    public AutenticacionController(UserServiceImpl userService, JwtServiceImpl jwtService) {
+    public AutenticacionController(UsuarioServiceImpl userService, JwtServiceImpl jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
     }

@@ -40,9 +40,9 @@ function Registro({ onLogin }) {
         metodo: 'POST',
         cuerpo: {
           email,
-          firstName: nombre,
-          lastName: apellido,
-          phoneNumber: telefono || null,
+          nombre: nombre,
+          apellido: apellido,
+          telefono: telefono || null,
           password,
         },
       })

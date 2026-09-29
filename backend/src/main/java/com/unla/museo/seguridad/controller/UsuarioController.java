@@ -1,7 +1,7 @@
 package com.unla.museo.seguridad.controller;
 
 import com.unla.museo.seguridad.dto.PersonaTO;
-import com.unla.museo.seguridad.service.impl.UserServiceImpl;
+import com.unla.museo.seguridad.service.impl.UsuarioServiceImpl;
 import com.unla.museo.seguridad.util.LinksApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -16,9 +16,9 @@ import java.util.List;
 @Tag(name = "Usuarios", description = "Consultas sobre usuarios registrados")
 public class UsuarioController {
 
-    private final UserServiceImpl userService;
+    private final UsuarioServiceImpl userService;
 
-    public UsuarioController(UserServiceImpl userService) {
+    public UsuarioController(UsuarioServiceImpl userService) {
         this.userService = userService;
     }
 

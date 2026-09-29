@@ -2,7 +2,7 @@ package com.unla.museo.seguridad.service;
 
 import com.unla.museo.comun.errores.SolicitudInvalidaException;
 import com.unla.museo.seguridad.entity.UsuarioEntity;
-import com.unla.museo.seguridad.exception.ErrorMessage;
+import com.unla.museo.comun.errores.MensajesError;
 import com.unla.museo.seguridad.exception.UsuarioNoEncontradoException;
 import com.unla.museo.seguridad.repository.UsuarioRepository;
 import com.unla.museo.seguridad.util.Roles;
@@ -23,7 +23,7 @@ public class UsuarioActualServiceImpl implements UsuarioActualService {
     @Override
     public UsuarioEntity obtenerPorEmail(String email) {
         return usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new UsuarioNoEncontradoException(ErrorMessage.User.NOT_FOUND));
+                .orElseThrow(() -> new UsuarioNoEncontradoException(MensajesError.Usuario.NO_ENCONRTADO));
     }
 
     @Override

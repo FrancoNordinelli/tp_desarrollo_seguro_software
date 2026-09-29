@@ -70,7 +70,7 @@ function Navegacion({ user, onLogout }) {
         )}
 
         <span className="usuario-info">
-          {user?.firstName} {user?.lastName}
+          {user?.nombre} {user?.apellido}
           {' · '}
           {user?.role}
         </span>

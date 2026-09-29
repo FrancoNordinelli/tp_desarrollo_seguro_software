@@ -11,17 +11,17 @@ import java.time.LocalDateTime;
 @Component
 public class UsuarioMapper {
 
-    public UsuarioEntity toEntity(CrearUsuarioRequest request, RolEntity role, String createdBy) {
+    public UsuarioEntity toEntity(CrearUsuarioRequest request, RolEntity rol, String creadoPor) {
         if (request == null) {
             return null;
         }
 
         UsuarioEntity entity = new UsuarioEntity();
         entity.setEmail(request.getEmail());
-        entity.setNombre(request.getFirstName());
-        entity.setApellido(request.getLastName());
-        entity.setRol(role);
-        entity.setCreadoPor(createdBy);
+        entity.setNombre(request.getNombre());
+        entity.setApellido(request.getApellido());
+        entity.setRol(rol);
+        entity.setCreadoPor(creadoPor);
         entity.setCreacion(LocalDateTime.now());
         entity.setActivo(true);
         return entity;

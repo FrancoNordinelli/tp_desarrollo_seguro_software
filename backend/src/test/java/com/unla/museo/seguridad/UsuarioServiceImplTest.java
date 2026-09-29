@@ -5,12 +5,11 @@ import com.unla.museo.seguridad.dto.UsuarioTO;
 import com.unla.museo.seguridad.dto.mapper.UsuarioMapper;
 import com.unla.museo.seguridad.entity.RolEntity;
 import com.unla.museo.seguridad.entity.UsuarioEntity;
-import com.unla.museo.seguridad.exception.RecursoInexistenteException;
 import com.unla.museo.seguridad.exception.UsuarioExistenteException;
 import com.unla.museo.seguridad.exception.UsuarioNoEncontradoException;
 import com.unla.museo.seguridad.repository.RolRepository;
 import com.unla.museo.seguridad.repository.UsuarioRepository;
-import com.unla.museo.seguridad.service.impl.UserServiceImpl;
+import com.unla.museo.seguridad.service.impl.UsuarioServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,18 +25,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceImplTest {
+class UsuarioServiceImplTest {
 
     @Mock private UsuarioRepository usuarioRepository;
     @Mock private RolRepository rolRepository;
     @Mock private PasswordEncoder passwordEncoder;
 
-    private UserServiceImpl service;
+    private UsuarioServiceImpl service;
     private final UsuarioMapper usuarioMapper = new UsuarioMapper();
 
     @BeforeEach
     void setUp() {
-        service = new UserServiceImpl(usuarioRepository, rolRepository, passwordEncoder, usuarioMapper);
+        service = new UsuarioServiceImpl(usuarioRepository, rolRepository, passwordEncoder, usuarioMapper);
     }
 
     @Test

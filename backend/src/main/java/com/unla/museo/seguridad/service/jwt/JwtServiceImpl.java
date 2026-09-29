@@ -2,7 +2,7 @@ package com.unla.museo.seguridad.service.jwt;
 
 import com.unla.museo.seguridad.entity.RolEntity;
 import com.unla.museo.seguridad.entity.UsuarioEntity;
-import com.unla.museo.seguridad.exception.ErrorMessage;
+import com.unla.museo.comun.errores.MensajesError;
 import com.unla.museo.seguridad.exception.UsuarioNoEncontradoException;
 import com.unla.museo.seguridad.repository.UsuarioRepository;
 import io.jsonwebtoken.Claims;
@@ -76,7 +76,7 @@ public class JwtServiceImpl implements JwtService {
     private RolEntity getRolForUser(String email) {
 
         UsuarioEntity user = usuarioRepository.findByEmail(email)
-                .orElseThrow(() -> new UsuarioNoEncontradoException(ErrorMessage.User.NOT_FOUND));
+                .orElseThrow(() -> new UsuarioNoEncontradoException(MensajesError.Usuario.NO_ENCONRTADO));
 
 
         if (user.getRol() == null) {

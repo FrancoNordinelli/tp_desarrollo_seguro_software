@@ -1,7 +1,5 @@
 package com.unla.museo.comun.errores;
 
-import com.unla.museo.seguridad.exception.ErrorMessage;
-import com.unla.museo.seguridad.exception.RecursoInexistenteException;
 import com.unla.museo.seguridad.exception.UsuarioExistenteException;
 import com.unla.museo.seguridad.exception.UsuarioNoEncontradoException;
 import lombok.extern.slf4j.Slf4j;
@@ -113,7 +111,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<RespuestaError> handleExcepcionNoControlada(Exception ex) {
         log.error("Excepción no controlada", ex);
-        return construir(HttpStatus.INTERNAL_SERVER_ERROR, ErrorMessage.INTERNAL_ERROR, null);
+        return construir(HttpStatus.INTERNAL_SERVER_ERROR, MensajesError.INTERNAL_ERROR, null);
     }
 
     private ResponseEntity<RespuestaError> construir(HttpStatus status, String mensaje, Map<String, String> detalles) {

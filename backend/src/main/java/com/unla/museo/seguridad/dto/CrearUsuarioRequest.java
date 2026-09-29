@@ -13,12 +13,12 @@ public class CrearUsuarioRequest {
     private String email;
 
     @NotBlank(message = "El nombre es obligatorio")
-    private String firstName;
+    private String nombre;
 
     @NotBlank(message = "El apellido es obligatorio")
-    private String lastName;
+    private String apellido;
 
-    private String phoneNumber;
+    private String telefono;
 
     @NotBlank(message = "La contraseña es obligatoria")
     @Size(min = 8, max = 100, message = "La contraseña debe estar entre los 8 y 100 caracteres")
